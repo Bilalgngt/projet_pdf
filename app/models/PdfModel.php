@@ -1,22 +1,20 @@
 <?php
 include('../library/examples/tcpdf_include.php');
-
-
 class PdfModel {
 
     private $_pdf;
-    private $_logo;
 
     public function __construct() {
-        $this->_pdf = new TCPDF('P','mm', 'A4');
+        $this->_pdf = new TCPDF();
         $this->init();
-
     }
     public function init(){
         $this->_pdf->SetFont('dejavusans', '', 14, '', true);
         $this->_pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+        $this->_pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+        $this->_pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+        $this->_pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
         $this->setInformation();
-        $this->header();
         $this->footer();
 
     }
@@ -28,23 +26,30 @@ class PdfModel {
         $this->_pdf->SetKeywords('TCPDF, PDF, example, test, guide');
     }
 
-    public function header(){
-        $this->_pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 001', PDF_HEADER_STRING, array(0,64,255), array(0,64,128));
-    }
+    public function Header($link, $logo){
+        $this->_pdf->MultiCell(/*taille de la case de l'image */50,/*taille de la case de l'image */ 45, '', 1, '', 0, 0, /*padding x*/5, /*padding y*/5, true, 0, false, true, 0);
+        $this->_pdf->MultiCell(/*taille de la case du contenu x*/150,/*taille de la case du contenu y*/ 45, '', 1, '', 0, 0, /*padding x*/55, /*padding y*/5, true, 0, false, true, 0);
+        $this->_pdf->MultiCell(/*taille de la case du contenu x*/40,/*taille de la case du contenu y*/ 23, '', 1, '', 0, 0, /*padding x*/-45, /*padding y*/5, true, 0, false, true, 0);
+        $image_file = K_PATH_IMAGES.$logo;
+        $this->_pdf->Image($image_file, 10, 10, 40, 35, 'JPG', $link, 'T', false, 300, '', false, false, 1, false, false, false);
+        $this->_pdf->SetFont('helvetica', 'B', 20);
+        $this->_pdf->Cell(0, 15,'' , 0, false, 'C', 0, '', 0, false, 'M', 'M');
+        }
 
-    public function footer(){
-        $this->_pdf->setFooterData(array(0,64,0), array(0,64,128));
-        $this->_pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-        $this->_pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+    public function Footer(){
+        
     }
     public function addPage(){
+        $this->_pdf->SetPrintHeader(false);
+        $this->_pdf->SetPrintFooter(false);
         $this->_pdf->AddPage();
+        $this->_pdf->MultiCell(/*taille de la case du corps*/200,/*taille de la case du corps y*/ 190, '', 1, '', 0, 0, /*padding x*/5, /*padding y*/50, true, 0, false, true, 0);
+        $this->_pdf->MultiCell(/*taille de la case du corps*/200,/*taille de la case du corps y*/ 52, '', 1, '', 0, 0, /*padding x*/5, /*padding y*/240, true, 0, false, true, 0);
     }
 
-    public function addLine($x, $y, $c1/*inclinaison premier point*/, $c2 /*inclinaison second point*/){
-        $style2 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0 , 'color' => array(0, 0, 0));
-        $this->_pdf->Line($c1, $x, $c2, $y,  $style2);
-        //$this->_pdf->Cell(55, 120, "\n", 1, 1, 'R', 0, '', 1);
+    public function addLine($x1, $y1, $x2, $y2 ){
+        $style = array('width' => 0.7, 'cap' => 'round', 'join' => 'round', 'dash' => '4,10', 'color' => array(192, 192, 192));
+        $this->_pdf->Line($x1, $y1, $x2, $y2,  $style);
 
     }
 
@@ -64,30 +69,3 @@ class PdfModel {
         }
     }
 }
-/*
-// set default header data
-$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 001', PDF_HEADER_STRING, array(0,64,255), array(0,64,128));
-$pdf->setFooterData(array(0,64,0), array(0,64,128));
-
-// set header and footer fonts
-$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-
-// set default monospaced font
-$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-// set margins
-$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-// set auto page breaks
-$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-
-// set image scale factor
-$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-$pdf->AddPage();
-
-$pdf->SetFont('dejavusans', '', 14, '', true);
-*/

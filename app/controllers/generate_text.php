@@ -1,24 +1,18 @@
 <?php
     //inclusion de la bilbiotheque
     include('../autoload/autoload.php');
+    include('../models/CompanyModel.php');
     include('../models/PdfModel.php');
 
     
     $pdfSheet = new PdfModel();
     $pdfSheet->addPage();
-    $pdfSheet->addText('salut!',100,75,12);
-    $pdfSheet->addLine(75, 150, 25, 25);
-    $pdfSheet->addLine(150, 150, 25, 40);
-    $pdfSheet->addLine(75, 150, 40, 40);
+    $pdfSheet->Header($rows['0']['link'], $rows['0']['logo']);
+    $pdfSheet->addLine(25, 50.5, 25, 240);
+    $pdfSheet->addLine(45, 50.5, 45, 240);
+    $pdfSheet->addLine(60, 50.5, 60, 240);
+    $pdfSheet->addLine(100, 50.5, 100, 240);
+    $pdfSheet->addLine(150, 50.5, 150, 240);
     echo $pdfSheet->generatePdf();
 
     exit();
-
-// Set some content to print
-//$html = <<<EOD 
-//EOD;
-
-// Print text using writeHTMLCell()
-//$pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, '', true);
-
-// ---------------------------------------------------------
