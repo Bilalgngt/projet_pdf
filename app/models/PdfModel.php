@@ -35,14 +35,14 @@ class PdfModel extends TCPDF {
 
     public function drawFooter(){
         $this->SetFont('times', 'I', 10);
-        $this->MultiCell(/*taille de la case du footer x*/$this->convertPixel(2390),/*taille de la case du footer y*/ $this->convertPixel(567), 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 1, 'C', 0, 0, /*padding x*/$this->convertPixel(23.62), /*padding y*/$this->convertPixel(2834.64), true, 0, false, true, 55, 'B');
+        $this->MultiCell(/*taille de la case du footer x*/$this->convertPixel(2432.76),/*taille de la case du footer y*/ $this->convertPixel(567), 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 1, 'C', 0, 0, /*padding x*/$this->convertPixel(23.62), /*padding y*/$this->convertPixel(2834.64), true, 0, false, true, 55, 'B');
         $this->ImageSVG($file='../../public/css/kiwi-maps_logo.svg', $this->convertPixel(2159), $this->convertPixel(3401.5), $this->convertPixel(295.3), $this->convertPixel(82.7), $link='http://www.kiwi-maps.com/', 'R', '', 0,false);
     }
     public function newPage(){
         $this->SetPrintHeader(false);
         $this->SetPrintFooter(false);
         $this->AddPage();
-        $this->MultiCell(/*taille de la case du corps*/$this->convertPixel(2840),/*taille de la case du corps y*/ $this->convertPixel(2280), '', 1, '', 0, 0, /*padding x*/$this->convertPixel(23.62), /*padding y*/$this->convertPixel(555.12), true, 0, false, true, 0);
+        $this->MultiCell(/*taille de la case du corps*/$this->convertPixel(2432.76),/*taille de la case du corps y*/ $this->convertPixel(2280), '', 1, '', 0, 0, /*padding x*/$this->convertPixel(23.62), /*padding y*/$this->convertPixel(555.12), true, 0, false, true, 0);
         
     }
 
