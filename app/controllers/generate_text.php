@@ -4,15 +4,16 @@
     include('../models/CompanyModel.php');
     include('../models/PdfModel.php');
 
-    
+    $sql = new CompanyModel();
+    $company = $sql->getCompanyById($_POST['Companies']);
+    $companyName = $company['0']['cname'];
+    $companyLink = $company['0']['link'];
+    $companyLogo = $company['0']['logo'];
     $pdfSheet = new PdfModel();
-    $pdfSheet->addPage();
-    $pdfSheet->Header($rows['0']['link'], $rows['0']['logo']);
-    $pdfSheet->addLine(25, 50.5, 25, 240);
-    $pdfSheet->addLine(45, 50.5, 45, 240);
-    $pdfSheet->addLine(60, 50.5, 60, 240);
-    $pdfSheet->addLine(100, 50.5, 100, 240);
-    $pdfSheet->addLine(150, 50.5, 150, 240);
+    $pdfSheet->newPage();
+    $pdfSheet->drawHeader($companyLink, $companyLogo);
+    $pdfSheet->drawFooter();
+    $pdfSheet->drawBody();
     echo $pdfSheet->generatePdf();
 
     exit();
