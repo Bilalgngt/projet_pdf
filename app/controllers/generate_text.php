@@ -3,7 +3,13 @@
     include('../autoload/autoload.php');
     include('../models/PdfModel.php');
 
-    
+    if(!empty($_POST)){
+        $site = json_decode($_POST['site']);
+
+        var_dump($site->name);
+    }
+
+
     $pdfSheet = new PdfModel();
     $pdfSheet->addPage();
     $pdfSheet->addText('salut!',100,75,12);
