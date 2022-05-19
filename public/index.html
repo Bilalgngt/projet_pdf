@@ -8,9 +8,18 @@
        <!-- <a href="php/convertir_pdf.php"><button> convertir en pdf</button></a> -->
 
         <form action="../app/controllers/generate_text.php" method="post">
-            Name: <input type="text" name="name" default="bilal"><br>
+            <label for="pet-select">Selectionnez votre entreprise</label>
+            <select name="Company" id="Company">
+                <option value="" disabled>--choisissez votre entreprise--</option>
+                <option value="1">company1</option>
+                <option value="2">company2</option>
+                <option value="3">company3</option>
+            </select>
+
             <button type="submit">convertir</button>
             </form>
+
+            
     <script src="js/main.js"></script>
        <script src="js/utilities.js"></script>
        <script src="js/example.js"></script>

@@ -1,2 +1,3 @@
-storage/
-app/library/
+**/logos/
+**/temp/
+**/library/
