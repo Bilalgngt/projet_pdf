@@ -18,6 +18,6 @@ class CompanyModel
         $query->execute([
             $companyId,
         ]);
-        return $query->fetchAll();
+        return $query->fetch();
     }
 }
