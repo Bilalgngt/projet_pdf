@@ -1,5 +1,5 @@
 <?php
-include('../library/examples/tcpdf_include.php');
+include('../../library/examples/tcpdf_include.php');
 class PdfModel extends TCPDF {
 
 
@@ -68,11 +68,11 @@ class PdfModel extends TCPDF {
         $this->Output(RELATIVE_PATH['temp']. 'example06.pdf','F');
         $output = RELATIVE_PATH['temp']. 'example06.pdf';
         if (@file_exists($output)) {
-            echo 'La conversion a réussi. Vous pouvez ';
-            echo '<a href="../../storage/temp/example06.pdf"> ouvrir le fichier</a>';
+            return 'La conversion a réussi. Vous pouvez '.
+            '<a href="../../storage/temp/example06.pdf"> ouvrir le fichier</a>';
         }
         else{
-            echo "Erreur de conversion";
+            return "Erreur de conversion";
         }
     }
 
