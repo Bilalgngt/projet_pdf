@@ -39,5 +39,6 @@ function encodeURIObject(data) {
     for (let key of keys) {
         response.push(key + '=' + data[key])
     }
+    //console.log(encodeURI(response.join('&')));
     return encodeURI(response.join('&'));
 }
