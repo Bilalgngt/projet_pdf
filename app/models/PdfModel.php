@@ -2,7 +2,7 @@
 include('../../library/examples/tcpdf_include.php');
 class PdfModel extends TCPDF {
 
-
+    private $_scale;
     public function __construct() {
         parent::__construct();
         $this->init();
@@ -79,6 +79,41 @@ class PdfModel extends TCPDF {
 
     }
 
+    public function drawBody($bodyDetails){
+    $this->MultiCell($this->convertPixel(2432.76),$this->convertPixel(2280), '', 1, '', 0, 0, $this->convertPixel(23.62), $this->convertPixel(555.12), true, 0, false, true, 0);
+    $this->SetFont('times', '', 12);
+    $this->MultiCell($this->convertPixel(0),$this->convertPixel(50), 'Prof. (m)', 0, 'L', 0, 0, $this->convertPixel(32), $this->convertPixel(575), true, 0, false, true, 0);
+    $this->MultiCell($this->convertPixel(0),$this->convertPixel(50), 'Lithologie', 0, 'L', 0, 0, $this->convertPixel(700), $this->convertPixel(575), true, 0, false, true, 0);
+    $this->MultiCell($this->convertPixel(0),$this->convertPixel(50), 'Commentaires', 0, 'L', 0, 0, $this->convertPixel(1200), $this->convertPixel(575), true, 0, false, true, 0);
+    $this->addLine(225, 565, 225, 2850, 'dot');
+    $this->addLine(362, 565, 362, 2850, 'dot');
+    $this->addLine(502, 565, 502, 2850, 'dot');
+    $this->addLine(1081, 565, 1081, 2850, 'dot');
+    $this->addLine(1672, 565, 1672, 2850, 'dot');
+    $this->drawScale($bodyDetails);
+    }
+
+    public function drawScale($scaleDetails){
+        $this->SetFont('times', '', 9);
+        //$scale = $this->scaler($scaleDetails->maxDepth);
+        switch(0){
+            
+            default:
+                $numSpacing = $this->convertPixel(800);
+                $lineSpacing = $this->convertPixel(825);
+                $this->MultiCell($this->convertPixel(75),$this->convertPixel(50), '0m', 0, '', 0, 0, $this->convertPixel(125), $numSpacing, true, 0, false, true, 0);
+                $this->addLine(180, $lineSpacing, 225, $lineSpacing, 'normal');
+                for ($i=0.5; $i < 5.5; $i=$i+0.5) { 
+                    $numSpacing = $numSpacing + 3;
+                    $lineSpacing = $lineSpacing + 3;
+                    if(is_int($i-0.5) || is_int($i+0.5)){
+                        $this->MultiCell($this->convertPixel(75),$this->convertPixel(50), $i . 'm', 0, '', 0, 0, $this->convertPixel(125), $numSpacing, true, 0, false, true, 0);
+                        $this->addLine(180, $lineSpacing, 225, $lineSpacing, 'normal');
+                    }
+                }
+        }
+    }
+
     public function drawFooter(){
         $this->SetFont('times', 'I', 10);
         $this->MultiCell(/*taille de la case du footer x*/$this->convertPixel(2432.76),/*taille de la case du footer y*/ $this->convertPixel(567), 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 1, 'C', 0, 0, $this->convertPixel(23.62), $this->convertPixel(2834.64), true, 0, false, true, 55, 'B');
@@ -91,29 +126,22 @@ class PdfModel extends TCPDF {
         $this->AddPage();
     }
 
-    public function drawBody(){
-    $this->MultiCell($this->convertPixel(2432.76),$this->convertPixel(2280), '', 1, '', 0, 0, $this->convertPixel(23.62), $this->convertPixel(555.12), true, 0, false, true, 0);
-    $this->SetFont('times', '', 12);
-    $this->MultiCell($this->convertPixel(150),$this->convertPixel(50), 'Prof. (m)', 1, 'L', 0, 0, $this->convertPixel(25), $this->convertPixel(570), true, 0, false, true, 0);
-    $this->addLine(197, 565, 197, 2850);
-    $this->addLine(362, 565, 362, 2850);
-    $this->addLine(502, 565, 502, 2850);
-    $this->addLine(1081, 565, 1081, 2850);
-    $this->addLine(1672, 565, 1672, 2850);
+    public function addLine($x1, $y1, $x2, $y2, $style ){
+        if ($style === 'dot'){
+            $style = array('width' => 0.4, 'cap' => 'butt', 'join' => 'mitter', 'dash' => '5,5', 'color' => array(0, 0, 0));
+            $this->Line($this->convertPixel($x1), $this->convertPixel($y1), $this->convertPixel($x2),$this->convertPixel($y2),  $style);
+            $style = array('width' => 0, 'cap' => 'butt', 'join' => 'mitter', 'dash' => 0, 'color' => array(0, 0, 0));
+            $this->Line(0,0,0,0,$style);
+        }
+        elseif ($style === 'normal'){
+            $style = array('width' => 0.4, 'cap' => 'butt', 'join' => 'mitter', 'dash' => 0, 'color' => array(0, 0, 0));
+            $this->Line($this->convertPixel($x1), $this->convertPixel($y1), $this->convertPixel($x2),$this->convertPixel($y2),  $style);
+            $style = array('width' => 0, 'cap' => 'butt', 'join' => 'mitter', 'dash' => 0, 'color' => array(0, 0, 0));
+            $this->Line(0,0,0,0,$style);
+        }
     }
 
-    public function addLine($x1, $y1, $x2, $y2 ){
-        $style = array('width' => 0.4, 'cap' => 'butt', 'join' => 'mitter', 'dash' => ' 5,5', 'color' => array(0, 0, 0));
-        $this->Line($this->convertPixel($x1), $this->convertPixel($y1), $this->convertPixel($x2),$this->convertPixel($y2),  $style);
-        $style = array('width' => 0, 'cap' => 'butt', 'join' => 'mitter', 'dash' => 0, 'color' => array(0, 0, 0));
-        $this->Line(0,0,0,0,$style);
 
-    }
-
-    public function addText($content, $x, $y,  $size){
-        $this->SetFont('times', 'B', $size);
-        $this->MultiCell(55, 5, '[FIT CELL] '.$content."\n", 1, 'L', 0, 0, $this->convertPixel($x), $this->convertPixel($y), true, 0, false, true, 60, 'M', true);
-    }
     public function generatePdf(){
         $this->Output(RELATIVE_PATH['temp']. 'example06.pdf','F');
         $output = RELATIVE_PATH['temp']. 'example06.pdf';

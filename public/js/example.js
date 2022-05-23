@@ -8,8 +8,7 @@ function sendSite() {
             site: site.siteName, //JSON.stringify(data),
             company: site.company,
             headers: JSON.stringify(site.headers),
-            coordinates: JSON.stringify(site.coordinates),
-            waterAltitude: JSON.stringify(site.waterAltitude),
+            body: JSON.stringify(site.body),
             action: 'generatePdf'
         }).then(function (response) {
             document.getElementById("linkPdf").innerHTML = response;

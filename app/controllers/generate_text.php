@@ -8,9 +8,8 @@
         if($_POST['action'] === 'generatePdf'){
             // déclaration de variables
             $headers = json_decode($_POST['headers']);
-            $coordinates = json_decode($_POST['coordinates']);
-            $waterAltitude = json_decode($_POST['waterAltitude']);
             $siteName = $_POST['site'];
+            $bodyDetails = $_POST['body'];
             //Appel de la base de données
             $Company = new CompanyModel();
             $company = $Company->getCompanyById($_POST['company']);
@@ -19,7 +18,7 @@
             foreach ($headers as $key => $header ) {
                     $pdfSheet->newPage();
                     $pdfSheet->drawHeader($company, $siteName, $header);
-                    $pdfSheet->drawBody();
+                    $pdfSheet->drawBody($bodyDetails[$key]);
                     $pdfSheet->drawFooter();
             }
             echo $pdfSheet->generatePdf();
