@@ -10,6 +10,7 @@ function sendSite() {
             headers: JSON.stringify(site.headers),
             scaleDetails: JSON.stringify(site.scaleDetails),
             sampleDetails: JSON.stringify(site.sampleDetails),
+            pollutantDetails: JSON.stringify(site.pollutantDetails),
             action: 'generatePdf'
         }).then(function (response) {
             document.getElementById("linkPdf").innerHTML = response;

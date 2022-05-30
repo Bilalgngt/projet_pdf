@@ -28,6 +28,7 @@
             $headers = json_decode($_POST['headers']);
             $scaleDetails = json_decode($_POST['scaleDetails']);
             $sampleDetails = json_decode($_POST['sampleDetails']);
+            $pollutantDetails = json_decode($_POST['pollutantDetails']);
             //var_dump($geologyDetails);
             $siteName = $_POST['site'];
             //Appel de la base de données pour les données de l'entreprise
@@ -41,17 +42,18 @@
             $pollutantNames = $Pollutant->getAllPollutantNames();
             //création de chaque page, une par une via foreach()
             $pdfSheet = new PdfModel();
+            foreach($pollutantDetails as $pollutant ){
+                $pollutant->name = $Pollutant->findPollutantNameByIdCustom($pollutant->id_pollutant_name,$pollutant->custom,$pollutantNames) . "\n mg/kg MS";
+            }
             foreach ($headers as $key => $header ) {
                     foreach($sampleDetails[$key] as $sample){
                         $sample->sampleName = $Geology->findGeologyNameByIdCustom($sample->sampleId,$sample->sampleCustom,$geologyNames);
-                        foreach($sample->pollutantDetails as $pollutant ){
-                        $pollutant->name = $Pollutant->findPollutantNameByIdCustom($pollutant->id,$pollutant->custom,$pollutantNames) . "\n mg/kg MS";
-                        }
                     }
+                    
                     $pdfSheet->newPage();
                     $pdfSheet->drawHeader($company, $siteName, $header);
                     $pdfSheet->setScale($scaleDetails[$key]->maxDepth);
-                    $pdfSheet->drawBody($scaleDetails[$key], $sampleDetails[$key]);
+                    $pdfSheet->drawBody($scaleDetails[$key], $sampleDetails[$key], $pollutantDetails);
                     $pdfSheet->drawFooter();
             }
             echo $pdfSheet->generatePdf();

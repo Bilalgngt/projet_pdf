@@ -85,7 +85,7 @@ class PdfModel extends TCPDF {
 
     }
 
-    public function drawBody($scaleDetails, $sampleDetails){
+    public function drawBody($scaleDetails, $sampleDetails, $pollutantDetails){
         $this->MultiCell($this->convertPixelToMm(2434),$this->convertPixelToMm(2280), '', 1, '', 0, 0, $this->convertPixelToMm(24), $this->convertPixelToMm(556), true, 0, false, true, 0);
         $this->SetFont('times', '', 12);
         $this->MultiCell($this->convertPixelToMm(0),$this->convertPixelToMm(50), 'Prof. (m)', 0, 'L', 0, 0, $this->convertPixelToMm(32), $this->convertPixelToMm(575), true, 0, false, true, 0);
@@ -102,6 +102,7 @@ class PdfModel extends TCPDF {
         $this->addLine(1672, 565, 1672, 2830, 'dot');
         $this->drawScale($scaleDetails);
         $this->drawSamples($sampleDetails);
+        $this->writePollutantNames($pollutantDetails);
         //$this->drawStrainer();
     }
 
@@ -130,6 +131,16 @@ class PdfModel extends TCPDF {
 
         $this->ImageSVG('@' . $svgString,   $this->convertPixelToMm(225),$this->convertPixelToMm(810), $this->convertPixelToMm(700),$this->convertPixelToMm(700),'', $align='', $palign='', $border=1, $fitonpage=false);
     }
+
+    public function writePollutantNames($pollutantDetails){
+        $cellWitdh = 757/sizeof($pollutantDetails);
+        $spacingX = 1700;
+        foreach($pollutantDetails as $pollutantDetail){
+            $this->MultiCell($this->convertPixelToMm($cellWitdh),$this->convertPixelToMm(145), $pollutantDetail->name, 1, 'C', 0, 0, $this->convertPixelToMm($spacingX), $this->convertPixelToMm(665), true, 0, false, true, $this->convertPixelToMm(145), 'M');
+            $spacingX+= $cellWitdh;
+        }
+    }
+
     public function drawSamples($sampleDetails){
         $counter = 0;
         foreach($sampleDetails as $key => $sample){
@@ -138,40 +149,39 @@ class PdfModel extends TCPDF {
             $endY = 810+$sample->end*15*$scaler;
             $centerY = ($startY+$endY)/2;
             $spacing = ($endY - $startY);
+            $cellWitdh = 757/$sample->pollutantToDraw;
             $pollutantSpacing = 1700;
             if($sample->analysis === 1){
                 $this->Rect($this->convertPixelToMm(400),$this->convertPixelToMm($centerY),$this->convertPixelToMm(20),$this->convertPixelToMm(20), 'DF', '', array(220,0,0));
             }
             $this->addLine(180,$startY,2457,$startY, 'normal');
+            $this->addLine($pollutantSpacing,810,$pollutantSpacing,$endY, 'normal');
             $this->MultiCell($this->convertPixelToMm(579),$this->convertPixelToMm($spacing), $sample->sampleName, 0, 'C', 0, 0, $this->convertPixelToMm(502), $this->convertPixelToMm($startY), true, 0, false, true, $this->convertPixelToMm($spacing), 'M');
             $this->MultiCell($this->convertPixelToMm(579),$this->convertPixelToMm($spacing), $sample->comment, 0, 'C', 0, 0, $this->convertPixelToMm(1081), $this->convertPixelToMm($startY), true, 0, false, true, $this->convertPixelToMm($spacing), 'M');
             $this->addLine(180,$endY,2457,$endY, 'normal');
-                if($sample->pollutantToDraw === 3){
-                    $spacingX = 1695;
-                    foreach($sample->pollutantDetails as $pollutant ){
-                        $this->MultiCell($this->convertPixelToMm(261),$this->convertPixelToMm($spacing), $pollutant->concentration, 0, 'C', 0, 0, $this->convertPixelToMm($pollutantSpacing), $this->convertPixelToMm($startY), true, 0, false, true, $this->convertPixelToMm($spacing), 'M');
-                        $pollutantSpacing+= 261;
-                        if($counter < 3){
-                            $this->MultiCell($this->convertPixelToMm(261),$this->convertPixelToMm(145), $pollutant->name, 0, 'C', 0, 0, $this->convertPixelToMm($spacingX), $this->convertPixelToMm(665), true, 0, false, true, $this->convertPixelToMm(145), 'M');
-                            $spacingX+= 261;
-                            $counter+=1;
-                        }
-                    }
-                    $this->addLine(1700,665.5,2457,665.5, 'normal');
+            foreach($sample->concentrations as $index => $concentration ){
+                    $this->MultiCell($this->convertPixelToMm($cellWitdh),$this->convertPixelToMm($spacing), $concentration, 0, 'C', 0, 0, $this->convertPixelToMm($pollutantSpacing), $this->convertPixelToMm($startY), true, 0, false, true, $this->convertPixelToMm($spacing), 'M');
+                    $pollutantSpacing+= $cellWitdh;
+                    $this->addLine($pollutantSpacing,810,$pollutantSpacing,$endY, 'normal');
+            }
+            
+                    /*$this->addLine(1700,665.5,2457,665.5, 'normal');
                     $this->addLine(1700,810,2457,810, 'normal');
                     $this->addLine(1700,664.5,1700,$endY, 'normal');
                     $this->addLine(1961,665,1961,$endY, 'normal');
-                    $this->addLine(2222,665,2222,$endY, 'normal');
-                }
-                elseif($sample->pollutantToDraw === 2){
+                    $this->addLine(2222,665,2222,$endY, 'normal');*/
+                /*elseif($sample->pollutantToDraw === 2){
                     $spacingX = 1695;
                     foreach($sample->pollutantDetails as $pollutant ){
-                        $this->MultiCell($this->convertPixelToMm(261),$this->convertPixelToMm($spacing), $pollutant->concentration, 0, 'C', 0, 0, $this->convertPixelToMm($pollutantSpacing), $this->convertPixelToMm($startY), true, 0, false, true, $this->convertPixelToMm($spacing), 'M');
-                        $pollutantSpacing+= 378.5;
-                        if($counter < 2){
-                            $this->MultiCell($this->convertPixelToMm(378.5),$this->convertPixelToMm(145), $pollutant->name, 0, 'C', 0, 0, $this->convertPixelToMm($spacingX), $this->convertPixelToMm(665), true, 0, false, true, $this->convertPixelToMm(145), 'M');
-                            $spacingX+= 378.5;
-                            $counter+=1;
+                        if(is_null($pollutant->concentration)){}
+                        else{
+                            $this->MultiCell($this->convertPixelToMm(261),$this->convertPixelToMm($spacing), $pollutant->concentration, 0, 'C', 0, 0, $this->convertPixelToMm($pollutantSpacing), $this->convertPixelToMm($startY), true, 0, false, true, $this->convertPixelToMm($spacing), 'M');
+                            $pollutantSpacing+= 378.5;
+                            if($counter < 2){
+                                $this->MultiCell($this->convertPixelToMm(378.5),$this->convertPixelToMm(145), $pollutant->name, 0, 'C', 0, 0, $this->convertPixelToMm($spacingX), $this->convertPixelToMm(665), true, 0, false, true, $this->convertPixelToMm(145), 'M');
+                                $spacingX+= 378.5;
+                                $counter+=1;
+                            }
                         }
                     }
                     $this->addLine(1700,665.5,2457,665.5, 'normal');
@@ -183,11 +193,14 @@ class PdfModel extends TCPDF {
                 elseif($sample->pollutantToDraw === 1){
                     $spacingX = 1695;
                     foreach($sample->pollutantDetails as $pollutant ){
-                        $this->MultiCell($this->convertPixelToMm(757),$this->convertPixelToMm($spacing), $pollutant->concentration, 0, 'C', 0, 0, $this->convertPixelToMm($pollutantSpacing), $this->convertPixelToMm($startY), true, 0, false, true, $this->convertPixelToMm($spacing), 'M');
-                        if($counter < 1){
-                            $this->MultiCell($this->convertPixelToMm(757),$this->convertPixelToMm(145), $pollutant->name, 0, 'C', 0, 0, $this->convertPixelToMm($spacingX), $this->convertPixelToMm(665), true, 0, false, true, $this->convertPixelToMm(145), 'M');
-                            $spacingX+= 757;
-                            $counter+=1;
+                        if(is_null($pollutant->concentration)){}
+                        else{
+                            $this->MultiCell($this->convertPixelToMm(757),$this->convertPixelToMm($spacing), $pollutant->concentration, 0, 'C', 0, 0, $this->convertPixelToMm($pollutantSpacing), $this->convertPixelToMm($startY), true, 0, false, true, $this->convertPixelToMm($spacing), 'M');
+                            if($counter < 1){
+                                $this->MultiCell($this->convertPixelToMm(757),$this->convertPixelToMm(145), $pollutant->name, 0, 'C', 0, 0, $this->convertPixelToMm($spacingX), $this->convertPixelToMm(665), true, 0, false, true, $this->convertPixelToMm(145), 'M');
+                                $spacingX+= 757;
+                                $counter+=1;
+                            }
                         }
                     }
                     $this->addLine(1700,665.5,2457,665.5, 'normal');
@@ -195,7 +208,7 @@ class PdfModel extends TCPDF {
                     $this->addLine(1700,664.5,1700,$endY, 'normal');
                     
 
-                }else{}
+                }else{}*/
         }
     }
 

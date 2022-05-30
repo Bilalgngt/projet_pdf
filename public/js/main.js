@@ -5,13 +5,15 @@ function generateHeader(site){
         headers: [],
         scaleDetails: [],
         sampleDetails: [],
+        pollutantDetails: []
     }
     console.log(site);
     let checked = 0;
     let inputs = document.querySelectorAll('.polluant');
     for (let i = 0; i < inputs.length; i++) {
         if(inputs[i].checked){
-            checked+=1;
+            checked++;
+            result.pollutantDetails.push({id_pollutant_name: inputs[i].value, custom: "0"});
         }
     }
     for(let logId in site.logs){
@@ -77,44 +79,42 @@ function generateHeader(site){
                     end: sample.z_max,
                     analysis: 0,
                     comment: sample.comment,
-                    pollutantDetails: [],
+                    concentrations: [],
                     pollutantToDraw: checked,
                 }
                 if((sample.pollutants.length > 0) || (sample.pollutants_eluate.length > 0) ){
                     sampleDetail.analysis = 1;
                 }
-                
-               /* for(let j = 0; j < sample.pollutants.length; j++){                    
-                    for (let i = 0; i < inputs.length; i++) {
-                        let pollutantDetail = {
-                            id: inputs[i].value,
-                            custom: 0,
-                            concentration: null
-                        }
-                        if(inputs[i].checked && inputs[i].value === sample.pollutants[j].id_pollutant_name){
-                            pollutantDetail.id = sample.pollutants[j].id_pollutant_name;
-                            pollutantDetail.custom = sample.pollutants[j].custom;
-                            pollutantDetail.concentration = sample.pollutants[j].concentration;
-                            sampleDetail.pollutantDetails.push(pollutantDetail);
+                let concentrations = new Array(result.pollutantDetails.length).fill(null);
+                result.pollutantDetails.forEach((pollutantDetail, i)=>{
+                    for(let pollutant of sample.pollutants){
+                        if(isSamePollutant(pollutantDetail, pollutant)){
+                            if(pollutant.under_detection === "1"){
+                                concentrations[i] = "< L.D."
+                            }
+                            else{
+                                concentrations[i] = pollutant.concentration;
+                            }
                         }
                     }
-                }*/
-                for (let i = 0; i < inputs.length; i++) {
+                })
+                sampleDetail.concentrations = concentrations;
+                /*for (let i = 0; i < inputs.length; i++) {
                     let pollutantDetail = {
                         id: inputs[i].value,
                         custom: "0",
-                        concentration: 0
-                    }                   
+                        concentration: null
+                    }
                     for(let j = 0; j < sample.pollutants.length; j++){ 
                         
                         if(inputs[i].checked && inputs[i].value === sample.pollutants[j].id_pollutant_name){
-                            pollutantDetail.id = sample.pollutants[j].id_pollutant_name;
+                            pollutantDetail.id = sample.pollutants[j].id_pollutant_name
                             pollutantDetail.custom = sample.pollutants[j].custom;
                             pollutantDetail.concentration = sample.pollutants[j].concentration;
                         }
                     }
                     sampleDetail.pollutantDetails.push(pollutantDetail);
-                }
+                }*/
                 geologies.push(sampleDetail);
             }
             depths.sampleMaxDepth = sampleZmax;
@@ -124,6 +124,12 @@ function generateHeader(site){
         depths.maxDepth = Math.max(...Object.values(depths));
         result.scaleDetails.push(depths);
     }
-    console.log(result.sampleDetails);
+    console.log(result);
     return result;
+}
+
+
+function isSamePollutant(pollutant1, pollutant2){
+    return pollutant1.id_pollutant_name === pollutant2.id_pollutant_name &&
+            pollutant1.custom === pollutant2.custom;
 }
