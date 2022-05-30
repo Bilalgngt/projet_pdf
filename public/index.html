@@ -8,13 +8,23 @@
        <!-- <a href="php/convertir_pdf.php"><button> convertir en pdf</button></a> -->
 
         <form action="../app/controllers/generate_text.php" method="post">
-            <label for="pet-select">Selectionnez votre entreprise</label>
+            <label for="company">Selectionnez votre entreprise</label>
             <select name="Company" id="Company">
                 <option value="" disabled>--choisissez votre entreprise--</option>
                 <option value="1">company1</option>
                 <option value="2">company2</option>
                 <option value="3">company3</option>
             </select>
+
+            <div>
+                <input type="checkbox" name="check_list[]" value="424" class="polluant" />
+                <label for="p1">polluant1</label>
+                <input type="checkbox" name="check_list[]" value="401" class="polluant"/>
+                <label for="p2">polluant2</label>
+                <input type="checkbox" name="check_list[]" value="402" class="polluant"/>
+                <label for="p3">polluant3</label>
+
+              </div>
             <input name="action" value="chooseCompany" hidden/>
             <button type="submit">convertir</button>
             </form>
