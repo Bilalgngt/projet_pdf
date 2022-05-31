@@ -102,7 +102,7 @@ class PdfModel extends TCPDF
 
     }
 
-    public function drawBody($sampleDetails, $pollutantDetails)
+    public function drawBody($sampleDetails, $pollutantDetails, $waterZmin)
     {
         $startY = 565;
         $endY = 2830;
@@ -121,10 +121,12 @@ class PdfModel extends TCPDF
             $this->addLine($x, $startY, $x, $endY, 'dot');
         }
         $this->drawScale();
+        $this->drawWaterZmin($waterZmin);
         $this->drawSamples($sampleDetails);
         if (sizeof($pollutantDetails) > 0) {
             $this->writePollutantNames($pollutantDetails);
         }
+        
     }
 
     public function drawScale()
@@ -142,6 +144,24 @@ class PdfModel extends TCPDF
             }
             $posY += $spacing;
         }
+    }
+
+    public function drawWaterZmin($waterZmin)
+    {
+        $scaler = $this->getMaxScale($this->getMaxDepth());
+        $posX = array(263, 323,293);
+        $posY = 810 + $waterZmin * 15 * $scaler;
+        //var_dump($this->convertPixelToMm($posY-25));
+        if(!(is_null($waterZmin))){
+            $this->SetFillColor(0, 0, 255);
+            $this->SetDrawColor(0, 0, 255);
+            $this->Polygon(array($this->convertPixelToMm($posX[0]),$this->convertPixelToMm($posY-40),
+                                $this->convertPixelToMm($posX[1]),$this->convertPixelToMm($posY-40),
+                                $this->convertPixelToMm($posX[2]),$this->convertPixelToMm($posY)),'DF');
+            $this->SetFillColor(0, 0, 0);
+            $this->SetDrawColor(0, 0, 0);
+        }
+        
     }
 
 
@@ -243,3 +263,9 @@ class PdfModel extends TCPDF
         return $px * 0.084666667;
     }
 }
+
+
+
+
+
+//0,0,255,0.2

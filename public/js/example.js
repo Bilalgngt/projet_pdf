@@ -11,6 +11,7 @@ function sendSite() {
             maxDepths: JSON.stringify(site.maxDepths),
             sampleDetails: JSON.stringify(site.sampleDetails),
             pollutantDetails: JSON.stringify(site.pollutantDetails),
+            waterZmin: JSON.stringify(site.waterZmin),
             action: 'generatePdf'
         }).then(function (response) {
             document.getElementById("linkPdf").innerHTML = response;

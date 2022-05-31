@@ -4,6 +4,7 @@ function generateDataForPdf(site) {
         siteName: site.name,
         pages: [],
         maxDepths: [],
+        waterZmin: [],
         sampleDetails: [],
         pollutantDetails: getPollutantDetails()
     };
@@ -39,10 +40,13 @@ function generateDataForPdf(site) {
         result.sampleDetails[pageNumber] = getSampleDetails(log, result.pollutantDetails);
         result.pages.push(header);
         result.maxDepths.push(Math.max(...Object.values(depths)));
+        result.waterZmin.push(waterZ.min);
         pageNumber++;
     }
     console.log(result);
     return result;
+
+
 
     function isSamePollutant(pollutant1, pollutant2) {
         return pollutant1.id_pollutant_name === pollutant2.id_pollutant_name &&

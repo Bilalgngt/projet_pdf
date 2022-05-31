@@ -28,6 +28,7 @@
             // déclaration de variables
             $pages = json_decode($_POST['pages']);
             $maxDepths = json_decode($_POST['maxDepths']);
+            $waterZmin = json_decode($_POST['waterZmin']);
             $sampleDetails = json_decode($_POST['sampleDetails']);
             $pollutantDetails = loadPollutantNames($_POST['pollutantDetails']);
             $siteName = $_POST['site'];
@@ -39,7 +40,7 @@
                     loadGeologyNames($sampleDetails[$pageNumber],$geologyNames,$Geology);
                     $pdfSheet->newPage($maxDepths[$pageNumber]);
                     $pdfSheet->drawHeader($company, $siteName, $page);
-                    $pdfSheet->drawBody($sampleDetails[$pageNumber], $pollutantDetails);
+                    $pdfSheet->drawBody($sampleDetails[$pageNumber], $pollutantDetails, $waterZmin[$pageNumber]);
                     $pdfSheet->drawFooter();
             }
             $fileName = $siteName.'.pdf';
