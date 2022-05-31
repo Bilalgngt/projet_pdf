@@ -1,14 +1,14 @@
 'use strict';
 
 function sendSite() {
-    loadJSON('sites_json/654.json').then((data) => {
+    loadJSON('public/sites_json/31.json').then((data) => {
         //console.log(generateHeader(data));
-        let site = generateHeader(data);
-        postXHR('generate_text', {
+        let site = generateDataForPdf(data);
+        postXHR('generate_pdf', {
             site: site.siteName, //JSON.stringify(data),
             company: site.company,
-            headers: JSON.stringify(site.headers),
-            scaleDetails: JSON.stringify(site.scaleDetails),
+            pages: JSON.stringify(site.pages),
+            maxDepths: JSON.stringify(site.maxDepths),
             sampleDetails: JSON.stringify(site.sampleDetails),
             pollutantDetails: JSON.stringify(site.pollutantDetails),
             action: 'generatePdf'

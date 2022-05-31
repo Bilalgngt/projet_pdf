@@ -1,0 +1,10 @@
+# On suit les liens symboliques
+Options +FollowSymlinks
+# Blocages des url
+Options -Indexes
+
+# Activation du mode rewrite d'Apache
+RewriteEngine On
+
+# Réécriture des URL
+RewriteRule ^$  public/

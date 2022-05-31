@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="public/css/style.css">
         <title>Test</title>
     </head>
     <body>
        <!-- <a href="php/convertir_pdf.php"><button> convertir en pdf</button></a> -->
 
-        <form action="../app/controllers/generate_text.php" method="post">
+        <form>
             <label for="company">Selectionnez votre entreprise</label>
             <select name="Company" id="Company">
                 <option value="" disabled>--choisissez votre entreprise--</option>
@@ -17,23 +17,21 @@
             </select>
 
             <div>
-                <input type="checkbox" name="check_list[]" value="424" class="polluant" />
+                <input id="p1" type="checkbox" name="check_list[]" value="424" class="polluant" />
                 <label for="p1">polluant1</label>
-                <input type="checkbox" name="check_list[]" value="401" class="polluant"/>
+                <input id="p2" type="checkbox" name="check_list[]" value="401" class="polluant"/>
                 <label for="p2">polluant2</label>
-                <input type="checkbox" name="check_list[]" value="402" class="polluant"/>
+                <input id="p3" type="checkbox" name="check_list[]" value="402" class="polluant"/>
                 <label for="p3">polluant3</label>
 
               </div>
-            <input name="action" value="chooseCompany" hidden/>
-            <button type="submit">convertir</button>
             </form>
        <div class="button" onclick="sendSite()">Send site</div>
        <div id="linkPdf"></div>
 
             
-    <script src="js/main.js"></script>
-       <script src="js/utilities.js"></script>
-       <script src="js/example.js"></script>
+    <script src="public/js/main.js"></script>
+       <script src="public/js/utilities.js"></script>
+       <script src="public/js/example.js"></script>
     </body>
 </html> 

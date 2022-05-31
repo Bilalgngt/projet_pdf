@@ -1,31 +1,18 @@
-function generateHeader(site){
+function generateDataForPdf(site) {
     let result = {
         company: document.getElementById('Company').value,
         siteName: site.name,
-        headers: [],
-        scaleDetails: [],
+        pages: [],
+        maxDepths: [],
         sampleDetails: [],
-        pollutantDetails: []
-    }
+        pollutantDetails: getPollutantDetails()
+    };
+    let pageNumber = 0;
     console.log(site);
-    let checked = 0;
-    let inputs = document.querySelectorAll('.polluant');
-    for (let i = 0; i < inputs.length; i++) {
-        if(inputs[i].checked){
-            checked++;
-            result.pollutantDetails.push({id_pollutant_name: inputs[i].value, custom: "0"});
-        }
-    }
-    for(let logId in site.logs){
+    for (let logId in site.logs) {
         let log = site.logs[logId];
-        let depths = {
-            waterMaxDepth:null,
-            sampleMaxDepth:null,
-            strainerMaxDepth:log.about.strainer_zMax,
-            maxDepth:null
-        };
+        let waterZ = calculateWaterZMinZMax(log);
 
-        //declaration de l'objet header
         let header = {
             name: log.about.name,
             strainer_zMin: log.about.strainer_zMin,
@@ -36,100 +23,143 @@ function generateHeader(site){
             gpsSystem: site.gpsPosition.system,
             longitude: null,
             latitude: null,
-            waterAltitude: ''
+            waterAltitude: getWaterAltitudeCell(log, waterZ.min)
         };
-        //declaration de l'objet coordonnées en fnction du système
-        if (site.gpsPosition.system !== 'DD') {
-            header.longitude = 'x(' + site.gpsPosition.system + '): ' + log.about.longitude;
-            header.latitude = 'y(' + site.gpsPosition.system + '): ' + log.about.latitude;
-        } else {
-            header.longitude = 'Longitude: ' + log.about.longitude;
-            header.latitude = 'Latitude: ' + log.about.latitude;
-        }
-        
+        //declaration de l'objet coordonnées en fonction du système
+        let coordinates = getGPSCoordinateCell(site, log);
+        header.longitude = coordinates.longitude;
+        header.latitude = coordinates.latitude;
+
         //declaration de l'altitude de la nappe si existante sinon null
-        if(Object.keys(log.waterTables).length > 0)
-        {
-            let waterZMin = null;
-            let waterZMax = null;
-            for(let waterId in log.waterTables){
+        let depths = {
+            waterMaxDepth: waterZ.max,
+            sampleMaxDepth: calculateSampleMaxDepth(log),
+            strainerMaxDepth: log.about.strainer_zMax,
+        };
+        result.sampleDetails[pageNumber] = getSampleDetails(log, result.pollutantDetails);
+        result.pages.push(header);
+        result.maxDepths.push(Math.max(...Object.values(depths)));
+        pageNumber++;
+    }
+    console.log(result);
+    return result;
+
+    function isSamePollutant(pollutant1, pollutant2) {
+        return pollutant1.id_pollutant_name === pollutant2.id_pollutant_name &&
+            pollutant1.custom === pollutant2.custom;
+    }
+
+    function getPollutantDetails() {
+        let pollutantDetails = [];
+        let inputs = document.querySelectorAll('.polluant');
+        for (let i = 0; i < inputs.length; i++) {
+            if (inputs[i].checked) {
+                pollutantDetails.push({id_pollutant_name: inputs[i].value, custom: "0"});
+            }
+        }
+        return pollutantDetails;
+    }
+
+    function getGPSCoordinateCell(site, log) {
+        let result = {
+            longitude: '',
+            latitude: ''
+        };
+        if (site.gpsPosition.system !== 'DD') {
+            result.longitude = 'x(' + site.gpsPosition.system + '): ' + log.about.longitude;
+            result.latitude = 'y(' + site.gpsPosition.system + '): ' + log.about.latitude;
+        } else {
+            result.longitude = 'Longitude: ' + log.about.longitude;
+            result.latitude = 'Latitude: ' + log.about.latitude;
+        }
+        return result;
+    }
+
+    function getWaterAltitudeCell(log, waterZMin) {
+        if (Object.keys(log.waterTables).length > 0) {
+            return 'Altitude nappe : ' + (log.about.altitude - waterZMin).toFixed(3) + 'm NGF';
+        } else {
+            return '';
+        }
+    }
+
+    function calculateWaterZMinZMax(log) {
+        let waterZMin = null;
+        let waterZMax = null;
+        if (Object.keys(log.waterTables).length > 0) {
+            for (let waterId in log.waterTables) {
                 let water = log.waterTables[waterId];
-                if(water.z_min < waterZMin || waterZMin === null){
+                if (water.z_min < waterZMin || waterZMin === null) {
                     waterZMin = water.z_min;
                 }
-                if(water.z_max > waterZMax || waterZMax === null){
+                if (water.z_max > waterZMax || waterZMax === null) {
                     waterZMax = water.z_max;
                 }
             }
-            header.waterAltitude = 'Altitude nappe : '+(log.about.altitude-waterZMin).toFixed(3)+'m NGF';
-            depths.waterMaxDepth = waterZMax;
         }
-        if(Object.keys(log.samples).length > 0){
-            let sampleZmax = null;
-            let geologies = [];
-            for(let samplesId in log.samples){
-                let sample = log.samples[samplesId];
-                if(sample.z_max > sampleZmax || sampleZmax === null){
-                   sampleZmax = sample.z_max;
+        return {
+            min: waterZMin,
+            max: waterZMax
+        };
+    }
+
+    function fillConcentrationCell(sample, pollutantDetails) {
+        let concentrations = new Array(pollutantDetails.length).fill(null);
+        pollutantDetails.forEach((pollutantDetail, i) => {
+            for (let pollutant of sample.pollutants) {
+                if (isSamePollutant(pollutantDetail, pollutant)) {
+                    if (pollutant.under_detection === "1") {
+                        concentrations[i] = "< L.D."
+                    } else {
+                        concentrations[i] = pollutant.concentration;
+                    }
                 }
+            }
+        });
+        return concentrations;
+    }
+
+    function getSampleDetails(log, pollutantDetails) {
+        if (Object.keys(log.samples).length > 0) {
+            let sampleDetails = [];
+            for (let samplesId in log.samples) {
+                let sample = log.samples[samplesId];
                 let sampleDetail = {
-                    sampleId: sample.id_geology_name,
-                    sampleCustom: sample.geology_custom,
+                    geologyId: sample.id_geology_name,
+                    geologyCustom: sample.geology_custom,
                     start: sample.z_min,
                     end: sample.z_max,
                     analysis: 0,
                     comment: sample.comment,
                     concentrations: [],
-                    pollutantToDraw: checked,
+                    pollutantToDraw: pollutantDetails.length,
                 }
-                if((sample.pollutants.length > 0) || (sample.pollutants_eluate.length > 0) ){
+                if ((sample.pollutants.length > 0) || (sample.pollutants_eluate.length > 0)) {
                     sampleDetail.analysis = 1;
                 }
-                let concentrations = new Array(result.pollutantDetails.length).fill(null);
-                result.pollutantDetails.forEach((pollutantDetail, i)=>{
-                    for(let pollutant of sample.pollutants){
-                        if(isSamePollutant(pollutantDetail, pollutant)){
-                            if(pollutant.under_detection === "1"){
-                                concentrations[i] = "< L.D."
-                            }
-                            else{
-                                concentrations[i] = pollutant.concentration;
-                            }
-                        }
-                    }
-                })
-                sampleDetail.concentrations = concentrations;
-                /*for (let i = 0; i < inputs.length; i++) {
-                    let pollutantDetail = {
-                        id: inputs[i].value,
-                        custom: "0",
-                        concentration: null
-                    }
-                    for(let j = 0; j < sample.pollutants.length; j++){ 
-                        
-                        if(inputs[i].checked && inputs[i].value === sample.pollutants[j].id_pollutant_name){
-                            pollutantDetail.id = sample.pollutants[j].id_pollutant_name
-                            pollutantDetail.custom = sample.pollutants[j].custom;
-                            pollutantDetail.concentration = sample.pollutants[j].concentration;
-                        }
-                    }
-                    sampleDetail.pollutantDetails.push(pollutantDetail);
-                }*/
-                geologies.push(sampleDetail);
+                sampleDetail.concentrations = fillConcentrationCell(sample, pollutantDetails);
+                sampleDetails.push(sampleDetail);
             }
-            depths.sampleMaxDepth = sampleZmax;
-            result.sampleDetails.push(geologies);
+            return sampleDetails;
+        } else {
+            return [];
         }
-        result.headers.push(header);
-        depths.maxDepth = Math.max(...Object.values(depths));
-        result.scaleDetails.push(depths);
     }
-    console.log(result);
-    return result;
+
+    function calculateSampleMaxDepth(log) {
+        if (Object.keys(log.samples).length === 0) {
+            return null;
+        } else {
+            let sampleZmax = null;
+            for (let samplesId in log.samples) {
+                let sample = log.samples[samplesId];
+                if (sample.z_max > sampleZmax || sampleZmax === null) {
+                    sampleZmax = sample.z_max;
+                }
+            }
+            return sampleZmax;
+        }
+    }
 }
 
 
-function isSamePollutant(pollutant1, pollutant2){
-    return pollutant1.id_pollutant_name === pollutant2.id_pollutant_name &&
-            pollutant1.custom === pollutant2.custom;
-}

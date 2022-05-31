@@ -1,9 +1,12 @@
 <?php
-	$hostname = "localhost";	// essayer 127.0.0.1 (ajouter même le port :80) avec linux s'il ne reconais pas localhost
-	$port = "3306";
-    $base= "evaldepol";
-	$loginBD= "root";	
-	$passBD="";
+
+    require_once RELATIVE_PATH['config'].'connection_db.php';
+
+	$hostname = DB_SOIL_DATA['host'];	// essayer 127.0.0.1 (ajouter même le port :80) avec linux s'il ne reconais pas localhost
+	$port =  DB_SOIL_DATA['port'];
+    $base=  DB_SOIL_DATA['name'];
+	$loginBD=  DB_SOIL_DATA['user'];
+	$passBD= DB_SOIL_DATA['password'];
 	try {
 		// DSN (Data Source Name)pour se connecter à MySQL sous Wamp/Windows
 		$dsn = "mysql:server=$hostname ; port=$port; dbname=$base";

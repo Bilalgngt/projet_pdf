@@ -1,7 +1,7 @@
 'use strict';
 
 const RELATIVE_PATH = {
-    controllers: '../app/controllers/',
+    controllers: 'app/controllers/',
 };
 
 function loadJSON(filePath) {

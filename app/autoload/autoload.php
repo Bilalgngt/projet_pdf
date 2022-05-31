@@ -8,4 +8,15 @@ const RELATIVE_PATH = [
     'classes' => ABSOLUTE_PATH . 'classes/',
     'views' => ABSOLUTE_PATH . 'app/views/',
     'temp' => ABSOLUTE_PATH . 'storage/temp/',
+    'public' => ABSOLUTE_PATH . 'public/',
+    'library' => ABSOLUTE_PATH . 'library/',
+    'config' => ABSOLUTE_PATH . 'config/',
+    'logos' => ABSOLUTE_PATH . 'storage/logos/',
 ];
+
+/* Chargement des modèles */
+include(RELATIVE_PATH['models'].'CompanyModel.php');
+include(RELATIVE_PATH['models'].'PollutantModel.php');
+include(RELATIVE_PATH['models'].'GeologyModel.php');
+include(RELATIVE_PATH['models'].'GlobalParameterModel.php');
+include(RELATIVE_PATH['models'].'PdfModel.php');
