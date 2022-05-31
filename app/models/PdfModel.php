@@ -49,15 +49,22 @@ class PdfModel extends TCPDF {
     
     public function printTitle($title, $date, $name){
         //chagement format de la date
-        $newDate = date("d-m-Y", strtotime($date));  
-        $date = str_replace('-"', '/', $newDate);
-        $newDate = date("d/m/Y", strtotime($date));
+        //$newDate = date("d-m-Y", strtotime($date));  
+        //$date = str_replace('-"', '/', $newDate);
+        //$newDate = date("d/m/Y", strtotime($date));
+        $newDate = $this->changeDateFormat($date);
         $this->SetFont('helvetica', 'B', 20);
         // Title
         $this->MultiCell(0,$this->convertPixelToMm(100), $title, 0, 'L', 0, 0, $this->convertPixelToMm(650), $this->convertPixelToMm(25), true, 0, false, true, 0);
         $this->SetFont('helvetica', '0', 15);
         $this->MultiCell(0,$this->convertPixelToMm(100), 'Campagne: '.$newDate.' (Initiale)', 0, 'L', 0, 0, $this->convertPixelToMm(650), $this->convertPixelToMm(200), true, 0, false, true, 0);
     }
+
+    private function changeDateFormat($date){
+        $newDate = date("d-m-Y", strtotime($date));  
+        $date = str_replace('-"', '/', $newDate);
+        return date("d/m/Y", strtotime($date));
+    } 
 
     public function printTable($header){
         $this->SetFont('helvetica', '', 12);
@@ -86,6 +93,9 @@ class PdfModel extends TCPDF {
     }
 
     public function drawBody($scaleDetails, $sampleDetails, $pollutantDetails){
+        $startY = 565;
+        $endY = 2830;
+        $posX = array(225, 362, 502, 1081, 1672);
         $this->MultiCell($this->convertPixelToMm(2434),$this->convertPixelToMm(2280), '', 1, '', 0, 0, $this->convertPixelToMm(24), $this->convertPixelToMm(556), true, 0, false, true, 0);
         $this->SetFont('times', '', 12);
         $this->MultiCell($this->convertPixelToMm(0),$this->convertPixelToMm(50), 'Prof. (m)', 0, 'L', 0, 0, $this->convertPixelToMm(32), $this->convertPixelToMm(575), true, 0, false, true, 0);
@@ -95,11 +105,14 @@ class PdfModel extends TCPDF {
         $this->StopTransform();
         $this->MultiCell($this->convertPixelToMm(0),$this->convertPixelToMm(50), 'Lithologie', 0, 'L', 0, 0, $this->convertPixelToMm(700), $this->convertPixelToMm(575), true, 0, false, true, 0);
         $this->MultiCell($this->convertPixelToMm(0),$this->convertPixelToMm(50), 'Commentaires', 0, 'L', 0, 0, $this->convertPixelToMm(1200), $this->convertPixelToMm(575), true, 0, false, true, 0);
-        $this->addLine(225, 565, 225, 2830, 'dot');
-        $this->addLine(362, 565, 362, 2830, 'dot');
-        $this->addLine(502, 565, 502, 2850, 'dot');
-        $this->addLine(1081, 565, 1081, 2830, 'dot');
-        $this->addLine(1672, 565, 1672, 2830, 'dot');
+        foreach($posX as $x){
+            $this->addLine($x, $startY, $x, $endY, 'dot');
+        }
+        /*$this->addLine(225, $startY, 225, $endY, 'dot');
+        $this->addLine(362, $startY, 362, $endY, 'dot');
+        $this->addLine(502, $startY, 502, $endY, 'dot');
+        $this->addLine(1081, $startY, 1081, $endY, 'dot');
+        $this->addLine(1672, $startY, 1672, $endY, 'dot');*/
         $this->drawScale($scaleDetails);
         $this->drawSamples($sampleDetails);
         $this->writePollutantNames($pollutantDetails);
