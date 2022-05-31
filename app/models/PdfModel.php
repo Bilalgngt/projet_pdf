@@ -103,7 +103,6 @@ class PdfModel extends TCPDF {
         $this->drawScale($scaleDetails);
         $this->drawSamples($sampleDetails);
         $this->writePollutantNames($pollutantDetails);
-        //$this->drawStrainer();
     }
 
     public function drawScale($scaleDetails){
@@ -124,25 +123,18 @@ class PdfModel extends TCPDF {
         }
     }
 
-    public function drawStrainer(){
-       $svgString = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                    <path class="pathStroke" d="M50 15 L50 600 L120 600 L120 15 Z"></path>
-                    </svg>';
-
-        $this->ImageSVG('@' . $svgString,   $this->convertPixelToMm(225),$this->convertPixelToMm(810), $this->convertPixelToMm(700),$this->convertPixelToMm(700),'', $align='', $palign='', $border=1, $fitonpage=false);
-    }
 
     public function writePollutantNames($pollutantDetails){
         $cellWitdh = 757/sizeof($pollutantDetails);
         $spacingX = 1700;
         foreach($pollutantDetails as $pollutantDetail){
             $this->MultiCell($this->convertPixelToMm($cellWitdh),$this->convertPixelToMm(145), $pollutantDetail->name, 1, 'C', 0, 0, $this->convertPixelToMm($spacingX), $this->convertPixelToMm(665), true, 0, false, true, $this->convertPixelToMm(145), 'M');
+            $this->addLine(180,810,1700,810, 'normal');
             $spacingX+= $cellWitdh;
         }
     }
 
     public function drawSamples($sampleDetails){
-        $counter = 0;
         foreach($sampleDetails as $key => $sample){
             $scaler = $this->getMaxScale($this->getScale());
             $startY=810+$sample->start*15*$scaler;
@@ -160,55 +152,10 @@ class PdfModel extends TCPDF {
             $this->MultiCell($this->convertPixelToMm(579),$this->convertPixelToMm($spacing), $sample->comment, 0, 'C', 0, 0, $this->convertPixelToMm(1081), $this->convertPixelToMm($startY), true, 0, false, true, $this->convertPixelToMm($spacing), 'M');
             $this->addLine(180,$endY,2457,$endY, 'normal');
             foreach($sample->concentrations as $index => $concentration ){
-                    $this->MultiCell($this->convertPixelToMm($cellWitdh),$this->convertPixelToMm($spacing), $concentration, 0, 'C', 0, 0, $this->convertPixelToMm($pollutantSpacing), $this->convertPixelToMm($startY), true, 0, false, true, $this->convertPixelToMm($spacing), 'M');
-                    $pollutantSpacing+= $cellWitdh;
-                    $this->addLine($pollutantSpacing,810,$pollutantSpacing,$endY, 'normal');
+                $this->MultiCell($this->convertPixelToMm($cellWitdh),$this->convertPixelToMm($spacing), $concentration, 0, 'C', 0, 0, $this->convertPixelToMm($pollutantSpacing), $this->convertPixelToMm($startY), true, 0, false, true, $this->convertPixelToMm($spacing), 'M');
+                $pollutantSpacing+= $cellWitdh;
+                $this->addLine($pollutantSpacing,810,$pollutantSpacing,$endY, 'normal');
             }
-            
-                    /*$this->addLine(1700,665.5,2457,665.5, 'normal');
-                    $this->addLine(1700,810,2457,810, 'normal');
-                    $this->addLine(1700,664.5,1700,$endY, 'normal');
-                    $this->addLine(1961,665,1961,$endY, 'normal');
-                    $this->addLine(2222,665,2222,$endY, 'normal');*/
-                /*elseif($sample->pollutantToDraw === 2){
-                    $spacingX = 1695;
-                    foreach($sample->pollutantDetails as $pollutant ){
-                        if(is_null($pollutant->concentration)){}
-                        else{
-                            $this->MultiCell($this->convertPixelToMm(261),$this->convertPixelToMm($spacing), $pollutant->concentration, 0, 'C', 0, 0, $this->convertPixelToMm($pollutantSpacing), $this->convertPixelToMm($startY), true, 0, false, true, $this->convertPixelToMm($spacing), 'M');
-                            $pollutantSpacing+= 378.5;
-                            if($counter < 2){
-                                $this->MultiCell($this->convertPixelToMm(378.5),$this->convertPixelToMm(145), $pollutant->name, 0, 'C', 0, 0, $this->convertPixelToMm($spacingX), $this->convertPixelToMm(665), true, 0, false, true, $this->convertPixelToMm(145), 'M');
-                                $spacingX+= 378.5;
-                                $counter+=1;
-                            }
-                        }
-                    }
-                    $this->addLine(1700,665.5,2457,665.5, 'normal');
-                    $this->addLine(1700,810,2457,810, 'normal');
-                    $this->addLine(1700,664.5,1700,$endY, 'normal');
-                    $this->addLine(2078,665,2078,$endY, 'normal');
-
-                }
-                elseif($sample->pollutantToDraw === 1){
-                    $spacingX = 1695;
-                    foreach($sample->pollutantDetails as $pollutant ){
-                        if(is_null($pollutant->concentration)){}
-                        else{
-                            $this->MultiCell($this->convertPixelToMm(757),$this->convertPixelToMm($spacing), $pollutant->concentration, 0, 'C', 0, 0, $this->convertPixelToMm($pollutantSpacing), $this->convertPixelToMm($startY), true, 0, false, true, $this->convertPixelToMm($spacing), 'M');
-                            if($counter < 1){
-                                $this->MultiCell($this->convertPixelToMm(757),$this->convertPixelToMm(145), $pollutant->name, 0, 'C', 0, 0, $this->convertPixelToMm($spacingX), $this->convertPixelToMm(665), true, 0, false, true, $this->convertPixelToMm(145), 'M');
-                                $spacingX+= 757;
-                                $counter+=1;
-                            }
-                        }
-                    }
-                    $this->addLine(1700,665.5,2457,665.5, 'normal');
-                    $this->addLine(1700,810,2457,810, 'normal');
-                    $this->addLine(1700,664.5,1700,$endY, 'normal');
-                    
-
-                }else{}*/
         }
     }
 
