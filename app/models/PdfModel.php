@@ -177,6 +177,44 @@ class PdfModel extends TCPDF
 
     public function drawSamples($sampleDetails)
     {
+
+        /*
+         * Exemple utilsation PatternSVGModel
+         *
+                $patternId = 220;
+                $sampleHeightPx = 500;
+                $PatternSVG = new PatternSVGModel();
+                $image_txt = $PatternSVG->generateSVGImage($patternId);
+                $width_pattern = $PatternSVG->getWidthImage($patternId);
+                $height_pattern = $PatternSVG->getHeightImage($patternId);
+                $posY = 710;
+                $posX = 200;
+                $repeat_x = $PatternSVG->calculateRepeatX($patternId);
+                $repeat_y = $PatternSVG->calculateRepeatY($sampleHeightPx, $patternId);
+                for ($i = 0; $i < $repeat_x; $i++) {
+                    for ($j = 0; $j < $repeat_y; $j++) {
+                        if ($i === $repeat_x - 1 || $j === $repeat_y - 1) {
+                            $width_rest = 160 - $i * $width_pattern;
+                            if ($width_rest < 0) {
+                                $width_rest = 160;
+                            }
+                            $height_rest = $sampleHeightPx - $j * $height_pattern;
+                            if ($height_rest < 0) {
+                                $height_rest = $sampleHeightPx;
+                            }
+                            $this->StartTransform();
+                            $this->Rect($this->convertPixel($posX), $this->convertPixel($posY), $this->convertPixel($width_rest), $this->convertPixel($height_rest), 'CNZ'); //Clipping mask
+                            $this->ImageSVG($image_txt, $this->convertPixel($posX), $this->convertPixel($posY), $this->convertPixel($width_pattern), $this->convertPixel($height_pattern), $link = '', $align = '', $palign = '', $border = 0, $fitonpage = false);
+                            $this->StopTransform();
+                        } else {
+                            $this->ImageSVG($image_txt, $this->convertPixel($posX), $this->convertPixel($posY), $this->convertPixel($width_pattern), $this->convertPixel($height_pattern), $link = '', $align = '', $palign = '', $border = 0, $fitonpage = false);
+                        }
+                        $posY += $height_pattern;
+                    }
+                    $posY -= $height_pattern * $repeat_y;
+                    $posX += $width_pattern;
+                }
+         ***************************************************************/
         foreach ($sampleDetails as $key => $sample) {
             $scaler = $this->getMaxScale($this->getMaxDepth());
             $startY = 810 + $sample->start * 15 * $scaler;
