@@ -20,3 +20,4 @@ include(RELATIVE_PATH['models'].'PollutantModel.php');
 include(RELATIVE_PATH['models'].'GeologyModel.php');
 include(RELATIVE_PATH['models'].'GlobalParameterModel.php');
 include(RELATIVE_PATH['models'].'PdfModel.php');
+include(RELATIVE_PATH['models'].'PatternSVGModel.php');

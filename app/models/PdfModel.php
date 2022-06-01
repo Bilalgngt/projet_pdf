@@ -176,56 +176,38 @@ class PdfModel extends TCPDF
     }
 
     public function drawSamples($sampleDetails)
-    {
-
-        /*
-         * Exemple utilsation PatternSVGModel
-         *
-                $patternId = 220;
-                $sampleHeightPx = 500;
-                $PatternSVG = new PatternSVGModel();
-                $image_txt = $PatternSVG->generateSVGImage($patternId);
-                $width_pattern = $PatternSVG->getWidthImage($patternId);
-                $height_pattern = $PatternSVG->getHeightImage($patternId);
-                $posY = 710;
-                $posX = 200;
-                $repeat_x = $PatternSVG->calculateRepeatX($patternId);
-                $repeat_y = $PatternSVG->calculateRepeatY($sampleHeightPx, $patternId);
-                for ($i = 0; $i < $repeat_x; $i++) {
-                    for ($j = 0; $j < $repeat_y; $j++) {
-                        if ($i === $repeat_x - 1 || $j === $repeat_y - 1) {
-                            $width_rest = 160 - $i * $width_pattern;
-                            if ($width_rest < 0) {
-                                $width_rest = 160;
-                            }
-                            $height_rest = $sampleHeightPx - $j * $height_pattern;
-                            if ($height_rest < 0) {
-                                $height_rest = $sampleHeightPx;
-                            }
-                            $this->StartTransform();
-                            $this->Rect($this->convertPixel($posX), $this->convertPixel($posY), $this->convertPixel($width_rest), $this->convertPixel($height_rest), 'CNZ'); //Clipping mask
-                            $this->ImageSVG($image_txt, $this->convertPixel($posX), $this->convertPixel($posY), $this->convertPixel($width_pattern), $this->convertPixel($height_pattern), $link = '', $align = '', $palign = '', $border = 0, $fitonpage = false);
-                            $this->StopTransform();
-                        } else {
-                            $this->ImageSVG($image_txt, $this->convertPixel($posX), $this->convertPixel($posY), $this->convertPixel($width_pattern), $this->convertPixel($height_pattern), $link = '', $align = '', $palign = '', $border = 0, $fitonpage = false);
-                        }
-                        $posY += $height_pattern;
-                    }
-                    $posY -= $height_pattern * $repeat_y;
-                    $posX += $width_pattern;
-                }
-         ***************************************************************/
+    {   
+        $spaceLine = 0;
         foreach ($sampleDetails as $key => $sample) {
             $scaler = $this->getMaxScale($this->getMaxDepth());
+            $minimum = ($this->getMinimum($this->getMaxDepth()))*15*$scaler;
             $startY = 810 + $sample->start * 15 * $scaler;
+            if($spaceLine === 1){
+                $spaceLine = 0;
+                $startY = $endY;
+            }
             $endY = 810 + $sample->end * 15 * $scaler;
             $centerY = ($startY + $endY) / 2;
             $spacing = ($endY - $startY);
+
+
+            $this->drawPattern($sample->geologyId, $spacing, $startY);
             $this->addLine(180, $startY, 2457, $startY, 'normal');
+            if($spacing < $minimum){
+                $this->addLine(180, $endY, 362, $endY, 'normal');
+                $this->addLine(362, $endY, 375, $endY+100, 'normal');
+                $endY+=100;
+                $spacing = ($endY - $startY);
+                $centerY = ($startY + $endY) / 2;
+                $this->addLine(375, $endY, 2457, $endY, 'normal');
+                $spaceLine = 1;
+            }else{
+                $this->addLine(180, $endY, 2457, $endY, 'normal');
+            }
 
             $this->MultiCell($this->convertPixelToMm(579), $this->convertPixelToMm($spacing), $sample->geologyName, 0, 'C', 0, 0, $this->convertPixelToMm(502), $this->convertPixelToMm($startY), true, 0, false, true, $this->convertPixelToMm($spacing), 'M');
             $this->MultiCell($this->convertPixelToMm(579), $this->convertPixelToMm($spacing), $sample->comment, 0, 'C', 0, 0, $this->convertPixelToMm(1081), $this->convertPixelToMm($startY), true, 0, false, true, $this->convertPixelToMm($spacing), 'M');
-            $this->addLine(180, $endY, 2457, $endY, 'normal');
+            
             if ($sample->analysis === 1) {
                 $this->Rect($this->convertPixelToMm(400), $this->convertPixelToMm($centerY), $this->convertPixelToMm(20), $this->convertPixelToMm(20), 'DF', '', array(220, 0, 0));
             }
@@ -239,6 +221,39 @@ class PdfModel extends TCPDF
                     $this->addLine($pollutantSpacing, 810, $pollutantSpacing, $endY, 'normal');
                 }
             }
+        }
+    }
+
+    public function drawPattern($patternId, $sampleHeightPx, $posY){
+        $posX = 225;
+        $PatternSVG = new PatternSVGModel();
+        $image_txt = $PatternSVG->generateSVGImage($patternId);
+        $width_pattern = $PatternSVG->getWidthImage($patternId);
+        $height_pattern = $PatternSVG->getHeightImage($patternId);
+        $repeat_x = $PatternSVG->calculateRepeatX($patternId);
+        $repeat_y = $PatternSVG->calculateRepeatY($sampleHeightPx, $patternId);
+        for ($i = 0; $i < $repeat_x; $i++) {
+            for ($j = 0; $j < $repeat_y; $j++) {
+                if ($i === $repeat_x - 1 || $j === $repeat_y - 1) {
+                    $width_rest = 135 - $i * $width_pattern;
+                    if ($width_rest < 0) {
+                        $width_rest = 135;
+                    }
+                    $height_rest = $sampleHeightPx - $j * $height_pattern;
+                    if ($height_rest < 0) {
+                        $height_rest = $sampleHeightPx;
+                    }
+                    $this->StartTransform();
+                    $this->Rect($this->convertPixelToMm($posX), $this->convertPixelToMm($posY), $this->convertPixelToMm($width_rest), $this->convertPixelToMm($height_rest), 'CNZ'); //Clipping mask
+                    $this->ImageSVG($image_txt, $this->convertPixelToMm($posX), $this->convertPixelToMm($posY), $this->convertPixelToMm($width_pattern), $this->convertPixelToMm($height_pattern), $link = '', $align = '', $palign = '', $border = 0, $fitonpage = false);
+                    $this->StopTransform();
+                } else {
+                    $this->ImageSVG($image_txt, $this->convertPixelToMm($posX), $this->convertPixelToMm($posY), $this->convertPixelToMm($width_pattern), $this->convertPixelToMm($height_pattern), $link = '', $align = '', $palign = '', $border = 0, $fitonpage = false);
+                }
+                $posY += $height_pattern;
+            }
+            $posY -= $height_pattern * $repeat_y;
+            $posX += $width_pattern;
         }
     }
 
@@ -292,6 +307,22 @@ class PdfModel extends TCPDF
             return 2;
         } else {
             return 1;
+        }
+
+    }
+
+    public function getMinimum($maxDepth)
+    {
+        if ($maxDepth <= 5) {
+            return 0.2;
+        } elseif ($maxDepth < 10) {
+            return 0.4;
+        } elseif ($maxDepth < 20) {
+            return 0.7;
+        } elseif ($maxDepth < 50) {
+            return 1.6;
+        } else {
+            return 3.1;
         }
 
     }
