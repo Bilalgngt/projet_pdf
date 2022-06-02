@@ -53,7 +53,7 @@ class PdfModel extends TCPDF
         $this->MultiCell($this->convertPixelToMm(473), $this->convertPixelToMm(272), $header->name, 1, 'C', 0, 0, $this->convertPixelToMm(1984), $this->convertPixelToMm(24), true, 0, false, true, 25, 'M');
         /*logo */
         $image_file = RELATIVE_PATH['logos'] . $company['logo'];
-        $this->Image($image_file, $this->convertPixelToMm(80), $this->convertPixelToMm(80), $this->convertPixelToMm(473), $this->convertPixelToMm(414), 'JPG', $company['link'], 'T', false, 300, '', false, false, 1, false, false, false);
+        //$this->Image($image_file, $this->convertPixelToMm(80), $this->convertPixelToMm(80), $this->convertPixelToMm(473), $this->convertPixelToMm(414), 'JPG', $company['link'], 'T', false, 300, '', false, false, 1, false, false, false);
         $this->printTitle($siteName, $header->date_campaign, $header->name);
         $this->printLogDetails($header);
     }

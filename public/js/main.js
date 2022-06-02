@@ -132,10 +132,9 @@ function generateDataForPdf(site) {
     function getSampleDetails(log, pollutantDetails) {
         if (Object.keys(log.samples).length > 0) {
             let sampleDetails = [];
-            console.log(log.samples);
-            //for let .. of...
-            for (let samplesId in log.samples) {
-                let sample = log.samples[samplesId];
+            let logsArray = Object.values(log.samples);
+            sortedlogs = logsArray.sort(compare);
+            for (let sample of sortedlogs) {
                 let sampleDetail = {
                     geologyId: sample.id_geology_name,
                     geologyCustom: sample.geology_custom,
@@ -159,6 +158,16 @@ function generateDataForPdf(site) {
         }
     }
 
+    function compare(ZMin1, ZMin2){
+        if(ZMin1.z_min < ZMin2.z_min){
+            return -1;
+        }
+        if(ZMin1.z_min > ZMin2.z_min){
+            return 1;
+        }
+        return 0;
+    }
+
     function calculateSampleMaxDepth(log) {
         if (Object.keys(log.samples).length === 0) {
             return null;
@@ -174,7 +183,3 @@ function generateDataForPdf(site) {
         }
     }
 }
-
-
-Object.values
-ksort
