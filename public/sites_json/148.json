@@ -1,0 +1,403 @@
+{
+  "name": "Test3",
+  "logs": {
+    "15018": {
+      "about": {
+        "name": "S1",
+        "id": "15018",
+        "x": 133.12,
+        "y": 162.74,
+        "altitude": 150.54,
+        "latitude": null,
+        "longitude": null,
+        "type": "survey",
+        "id_campaign": "825",
+        "date_campaign": "2022-05-02",
+        "strainer_zMin": null,
+        "strainer_zMax": null,
+        "color": "#009900"
+      },
+      "samples": {
+        "22615": {
+          "z_min": 0,
+          "z_max": 1,
+          "pattern": "1",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "1",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        },
+        "22616": {
+          "z_min": 1,
+          "z_max": 2,
+          "pattern": "101",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "101",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        },
+        "22617": {
+          "z_min": 2,
+          "z_max": 3,
+          "pattern": "201",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "201",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        },
+        "22618": {
+          "z_min": 3,
+          "z_max": 4,
+          "pattern": "210",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "210",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        },
+        "22619": {
+          "z_min": 4,
+          "z_max": 5,
+          "pattern": "211",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "211",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        },
+        "22620": {
+          "z_min": 5,
+          "z_max": 6,
+          "pattern": "220",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "220",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        },
+        "22621": {
+          "z_min": 6,
+          "z_max": 7,
+          "pattern": "220",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "225",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        },
+        "22622": {
+          "z_min": 7,
+          "z_max": 8,
+          "pattern": "230",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "230",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        },
+        "22623": {
+          "z_min": 8,
+          "z_max": 9,
+          "pattern": "240",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "240",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        }
+      },
+      "waterTables": {},
+      "airs": {}
+    },
+    "15019": {
+      "about": {
+        "name": "S2",
+        "id": "15019",
+        "x": 147.35,
+        "y": 122.6,
+        "altitude": 150.54,
+        "latitude": null,
+        "longitude": null,
+        "type": "survey",
+        "id_campaign": "825",
+        "date_campaign": "2022-05-02",
+        "strainer_zMin": null,
+        "strainer_zMax": null,
+        "color": "#009900"
+      },
+      "samples": {
+        "22624": {
+          "z_min": 0,
+          "z_max": 1,
+          "pattern": "301",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "301",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        },
+        "22625": {
+          "z_min": 1,
+          "z_max": 2,
+          "pattern": "302",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "302",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        },
+        "22626": {
+          "z_min": 2,
+          "z_max": 3,
+          "pattern": "303",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "303",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        },
+        "22627": {
+          "z_min": 3,
+          "z_max": 4,
+          "pattern": "304",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "304",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        },
+        "22628": {
+          "z_min": 4,
+          "z_max": 5,
+          "pattern": "305",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "305",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        },
+        "22629": {
+          "z_min": 5,
+          "z_max": 6,
+          "pattern": "306",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "306",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        },
+        "22630": {
+          "z_min": 7,
+          "z_max": 8,
+          "pattern": "308",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "308",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        },
+        "22631": {
+          "z_min": 6,
+          "z_max": 7,
+          "pattern": "307",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "307",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        },
+        "22632": {
+          "z_min": 8,
+          "z_max": 9,
+          "pattern": "309",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "309",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        }
+      },
+      "waterTables": {},
+      "airs": {}
+    },
+    "15020": {
+      "about": {
+        "name": "S3",
+        "id": "15020",
+        "x": 214.42,
+        "y": 148.01,
+        "altitude": 150.54,
+        "latitude": null,
+        "longitude": null,
+        "type": "survey",
+        "id_campaign": "825",
+        "date_campaign": "2022-05-02",
+        "strainer_zMin": null,
+        "strainer_zMax": null,
+        "color": "#009900"
+      },
+      "samples": {
+        "22633": {
+          "z_min": 0,
+          "z_max": 1,
+          "pattern": "310",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "310",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        },
+        "22634": {
+          "z_min": 1,
+          "z_max": 2,
+          "pattern": "311",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "311",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        },
+        "22635": {
+          "z_min": 2,
+          "z_max": 3,
+          "pattern": "401",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "401",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        },
+        "22636": {
+          "z_min": 3,
+          "z_max": 4,
+          "pattern": "402",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "402",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        },
+        "22637": {
+          "z_min": 4,
+          "z_max": 5,
+          "pattern": "403",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "403",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        },
+        "22638": {
+          "z_min": 5,
+          "z_max": 6,
+          "pattern": "404",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "404",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        },
+        "22639": {
+          "z_min": 6,
+          "z_max": 7,
+          "pattern": "405",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "405",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        },
+        "22640": {
+          "z_min": 7,
+          "z_max": 8,
+          "pattern": "501",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "501",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        },
+        "22641": {
+          "z_min": 8,
+          "z_max": 9,
+          "pattern": "601",
+          "comment": "",
+          "globalParameters": [],
+          "id_geology_name": "601",
+          "geology_custom": "0",
+          "pollutants": [],
+          "pollutants_eluate": [],
+          "is_analysed": 1
+        }
+      },
+      "waterTables": {},
+      "airs": {}
+    }
+  },
+  "userId": "2",
+  "id": "148",
+  "gpsPosition": {
+    "offsetX": null,
+    "offsetY": null,
+    "system": "Lambert93",
+    "tileCol": null,
+    "tileRow": null,
+    "zoom": null
+  },
+  "isGeoreferenced": false
+}
