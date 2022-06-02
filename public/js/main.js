@@ -73,8 +73,14 @@ function generateDataForPdf(site) {
             result.longitude = 'x(' + site.gpsPosition.system + '): ' + log.about.longitude;
             result.latitude = 'y(' + site.gpsPosition.system + '): ' + log.about.latitude;
         } else {
-            result.longitude = 'Longitude: ' + log.about.longitude;
-            result.latitude = 'Latitude: ' + log.about.latitude;
+            if(log.about.latitude){
+                result.longitude = 'Longitude: ' + log.about.longitude;
+                result.latitude = 'Latitude: ' + log.about.latitude;
+            }
+            else{
+                result.longitude = 'Longitude: ';
+                result.latitude = 'Latitude: ';
+            }
         }
         return result;
     }
@@ -126,6 +132,8 @@ function generateDataForPdf(site) {
     function getSampleDetails(log, pollutantDetails) {
         if (Object.keys(log.samples).length > 0) {
             let sampleDetails = [];
+            console.log(log.samples);
+            //for let .. of...
             for (let samplesId in log.samples) {
                 let sample = log.samples[samplesId];
                 let sampleDetail = {
@@ -137,6 +145,7 @@ function generateDataForPdf(site) {
                     comment: sample.comment,
                     concentrations: [],
                     pollutantToDraw: pollutantDetails.length,
+                    pattern: sample.pattern, 
                 }
                 if ((sample.pollutants.length > 0) || (sample.pollutants_eluate.length > 0)) {
                     sampleDetail.analysis = 1;
@@ -167,3 +176,5 @@ function generateDataForPdf(site) {
 }
 
 
+Object.values
+ksort

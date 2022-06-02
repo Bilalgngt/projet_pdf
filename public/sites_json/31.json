@@ -805,26 +805,82 @@
             "is_analysed": 1
           },
           "248": {
-            "z_min": 1.7,
-            "z_max": 5.3,
+            "z_min": 1.9,
+            "z_max": 2.2,
             "pattern": "211",
             "comment": "",
             "globalParameters": [],
             "id_geology_name": "211",
             "geology_custom": "0",
-            "pollutants": [],
+            "pollutants": [
+              {
+                "concentration": 0,
+                "custom": "0",
+                "id": "471",
+                "id_pollutant_name": "1",
+                "under_detection": "1"
+              }
+            ],
             "pollutants_eluate": [],
             "is_analysed": 1
           },
-          "249": {
-            "z_min": 5.3,
-            "z_max": 5.5,
+          "350": {
+            "z_min": 2.6,
+            "z_max": 3,
             "pattern": "301",
             "comment": "",
             "globalParameters": [],
             "id_geology_name": "301",
             "geology_custom": "0",
-            "pollutants": [],
+            "pollutants": [
+                {
+                  "concentration": 0,
+                  "custom": "0",
+                  "id": "471",
+                  "id_pollutant_name": "1",
+                  "under_detection": "1"
+                }
+            ],
+            "pollutants_eluate": [],
+            "is_analysed": 1
+          },
+          "360": {
+            "z_min": 3.5,
+            "z_max": 4,
+            "pattern": "211",
+            "comment": "",
+            "globalParameters": [],
+            "id_geology_name": "301",
+            "geology_custom": "0",
+            "pollutants": [
+                {
+                  "concentration": 0,
+                  "custom": "0",
+                  "id": "471",
+                  "id_pollutant_name": "1",
+                  "under_detection": "1"
+                }
+            ],
+            "pollutants_eluate": [],
+            "is_analysed": 1
+          },
+          "365": {
+            "z_min": 4,
+            "z_max": 4.01,
+            "pattern": "211",
+            "comment": "",
+            "globalParameters": [],
+            "id_geology_name": "301",
+            "geology_custom": "0",
+            "pollutants": [
+                {
+                  "concentration": 0,
+                  "custom": "0",
+                  "id": "471",
+                  "id_pollutant_name": "1",
+                  "under_detection": "1"
+                }
+            ],
             "pollutants_eluate": [],
             "is_analysed": 1
           }

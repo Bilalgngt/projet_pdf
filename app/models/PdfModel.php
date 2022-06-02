@@ -121,12 +121,11 @@ class PdfModel extends TCPDF
             $this->addLine($x, $startY, $x, $endY, 'dot');
         }
         $this->drawScale();
-        $this->drawWaterZmin($waterZmin);
         $this->drawSamples($sampleDetails);
         if (sizeof($pollutantDetails) > 0) {
             $this->writePollutantNames($pollutantDetails);
         }
-        
+        $this->drawWaterZmin($waterZmin);
     }
 
     public function drawScale()
@@ -175,42 +174,79 @@ class PdfModel extends TCPDF
         }
     }
 
-    public function drawSamples($sampleDetails)
+    public function convertSampleZToPx($sampleZ){
+        $scaler = $this->getMaxScale($this->getMaxDepth());
+        return 810+$sampleZ * 15 * $scaler;
+    }
+
+    /*public function drawSamples($sampleDetails)
     {   
-        $spaceLine = 0;
+        $offsetY = 0;
+        $oldOffsetY = 0;
+        $endY = 0;
+        $previousY1 = 810;
+        $previousY2 = 810;
+        $scaler = $this->getMaxScale($this->getMaxDepth());
+        $minimum = ($this->getMinimum($this->getMaxDepth()))*15*$scaler;
         foreach ($sampleDetails as $key => $sample) {
-            $scaler = $this->getMaxScale($this->getMaxDepth());
-            $minimum = ($this->getMinimum($this->getMaxDepth()))*15*$scaler;
-            $startY = 810 + $sample->start * 15 * $scaler;
-            if($spaceLine === 1){
-                $spaceLine = 0;
-                $startY = $endY;
-            }
-            $endY = 810 + $sample->end * 15 * $scaler;
+            $startY = $this->convertSampleZToPx($sample->start);
+            $endY = $this->convertSampleZToPx($sample->end);
             $centerY = ($startY + $endY) / 2;
             $spacing = ($endY - $startY);
+            $this->drawPattern($sample->pattern, $spacing , $startY);
 
-
-            $this->drawPattern($sample->geologyId, $spacing, $startY);
-            $this->addLine(180, $startY, 2457, $startY, 'normal');
-            if($spacing < $minimum){
-                $this->addLine(180, $endY, 362, $endY, 'normal');
-                $this->addLine(362, $endY, 375, $endY+100, 'normal');
-                $endY+=100;
-                $spacing = ($endY - $startY);
-                $centerY = ($startY + $endY) / 2;
-                $this->addLine(375, $endY, 2457, $endY, 'normal');
-                $spaceLine = 1;
+            $this->addLine(180, $startY, 362, $startY, 'normal');
+            $this->addLine(180, $endY, 362, $endY, 'normal');
+            var_dump("pattern",$endY);
+            if($spacing < $offsetY+$minimum){
+                $offsetY+=100;
+                
+            }
+            else{
+                $offsetY = 0;
+            }
+            if($offsetY === 100){
+                $this->addLine(362, $endY, 375, $previousY2+$offsetY, 'normal'); //oblique
+                $this->addLine(375, $previousY2+$offsetY, 2457, $previousY2+$offsetY, 'normal', [255,0,0]); // grand trait
+            }
+            elseif($oldOffsetY >= 100){
+                //var_dump(("elseif"));
+                if($startY <= $previousY1){
+                    //var_dump($startY - $previousY1);
+                }
+                else{
+                    //var_dump($endY - ($previousY2+$oldOffsetY));
+                    $this->addLine(362, $startY, 375, $startY+$oldOffsetY, 'normal'); //oblique
+                    $this->addLine(375, $startY+$oldOffsetY, 2457, $startY+$oldOffsetY, 'normal'); // grand trait
+                }
+                
+                if ($sample->analysis === 1) {
+                    $this->Rect($this->convertPixelToMm(400), $this->convertPixelToMm(($startY+$previousY2*$oldOffsetY)/2), $this->convertPixelToMm(20), $this->convertPixelToMm(20), 'DF', '', array(0, 220, 0));
+                }
+                $this->addLine(362, $endY, 375, $endY+$oldOffsetY, 'normal');
+                $this->addLine(375, $endY+$oldOffsetY, 2457, $endY+$oldOffsetY, 'normal', [50,50,100]);
             }else{
-                $this->addLine(180, $endY, 2457, $endY, 'normal');
+                //var_dump("else");
+                $this->addLine(362, $previousY1, 375, $previousY2, 'normal'); //oblique
+                $this->addLine(375, $previousY2, 2457, $previousY2, 'normal', [0,0,255]); // grand trait
+                $spacing+=$offsetY;
+                if ($sample->analysis === 1) {
+                    $this->Rect($this->convertPixelToMm(400), $this->convertPixelToMm($centerY+($offsetY/2)), $this->convertPixelToMm(20), $this->convertPixelToMm(20), 'DF', '', array(220, 0, 0));
+                }
+                $this->addLine(362, $endY, 375, $endY+$offsetY, 'normal');
+                $this->addLine(375, $endY+$offsetY, 2457, $endY+$offsetY, 'normal', [0,255,0]);
             }
-
-            $this->MultiCell($this->convertPixelToMm(579), $this->convertPixelToMm($spacing), $sample->geologyName, 0, 'C', 0, 0, $this->convertPixelToMm(502), $this->convertPixelToMm($startY), true, 0, false, true, $this->convertPixelToMm($spacing), 'M');
-            $this->MultiCell($this->convertPixelToMm(579), $this->convertPixelToMm($spacing), $sample->comment, 0, 'C', 0, 0, $this->convertPixelToMm(1081), $this->convertPixelToMm($startY), true, 0, false, true, $this->convertPixelToMm($spacing), 'M');
             
-            if ($sample->analysis === 1) {
-                $this->Rect($this->convertPixelToMm(400), $this->convertPixelToMm($centerY), $this->convertPixelToMm(20), $this->convertPixelToMm(20), 'DF', '', array(220, 0, 0));
-            }
+            
+            //$this->addLine(362, $endY, 375, $endY+$offsetY, 'normal');
+            //$this->addLine(375, $endY+$offsetY, 2457, $endY+$offsetY, 'normal');
+            $previousY1 = $endY;
+            $previousY2 = $endY+$offsetY;
+            $oldOffsetY = $offsetY;
+            var_dump("grand trait", $previousY2+$offsetY);
+           // $this->MultiCell($this->convertPixelToMm(579), $this->convertPixelToMm($spacing), $sample->geologyName, 0, 'C', 0, 0, $this->convertPixelToMm(502), $this->convertPixelToMm($startY), true, 0, false, true, $this->convertPixelToMm($spacing), 'M');
+           // $this->MultiCell($this->convertPixelToMm(579), $this->convertPixelToMm($spacing), $sample->comment, 0, 'C', 0, 0, $this->convertPixelToMm(1081), $this->convertPixelToMm($startY), true, 0, false, true, $this->convertPixelToMm($spacing), 'M');
+            
             if ($sample->pollutantToDraw > 0) {
                 $cellWidth = 757 / $sample->pollutantToDraw;
                 $pollutantSpacing = 1700;
@@ -222,7 +258,73 @@ class PdfModel extends TCPDF
                 }
             }
         }
+    }*/
+
+    public function drawSamples($sampleDetails)
+    {
+        $scaler = $this->getMaxScale($this->getMaxDepth());
+        $minimum = ($this->getMinimum($this->getMaxDepth()))*15*$scaler;
+        $this->straightLine(810);
+        $penY = 810;
+        $previousPatternY = 0;
+        $previousPenY = 0;
+        foreach ($sampleDetails as $key => $sample) {
+            $startY = $this->convertSampleZToPx($sample->start);
+            $endY = $this->convertSampleZToPx($sample->end);
+            $spacing = ($endY - $startY);
+            
+
+            $this->drawPattern($sample->pattern, $spacing , $startY);
+
+            if($startY !== $previousPatternY && $previousPatternY !== 0 || $previousPatternY === 0 && $sample->start !== 0){
+                if($startY-$penY < $minimum){
+                    $this->brokenLine($startY, $penY - $startY + $minimum);
+                    $penY = $penY + $minimum;
+                }
+                else{
+                    $this->straightLine($startY);
+                    $penY = $startY;
+                }
+                $previousPenY = $penY;
+            }
+            if($endY - $penY < $minimum){
+                $this->brokenLine($endY, $penY-$endY+$minimum);
+                $penY += $minimum;
+            }
+            else{
+                $this->straightLine($endY);
+                $penY = $endY;
+            }
+            $centerY = ($penY-$startY)/2 + $startY-10;
+            if ($sample->analysis === 1) {
+                $this->Rect($this->convertPixelToMm(420), $this->convertPixelToMm($centerY), $this->convertPixelToMm(20), $this->convertPixelToMm(20), 'DF', '', array(255, 0, 0));
+            }
+            if($previousPenY === 0){
+                $previousPenY = $startY;
+            }
+            $heightMm = $this->convertPixelToMm($penY - $previousPenY);
+            $posYMm = $this->convertPixelToMm($previousPenY);
+            $this->MultiCell($this->convertPixelToMm(579), $heightMm, $sample->geologyName, 0, 'C', 0, 0, $this->convertPixelToMm(502), $posYMm, true, 0, false, true, $heightMm, 'M');
+            $this->MultiCell($this->convertPixelToMm(579), $heightMm, $sample->comment, 0, 'C', 0, 0, $this->convertPixelToMm(1081), $posYMm, true, 0, false, true, $heightMm, 'M');
+            
+            if ($sample->pollutantToDraw > 0) {
+                $cellWidth = 757 / $sample->pollutantToDraw;
+                $pollutantSpacing = 1700;
+                $this->addLine($pollutantSpacing, 810, $pollutantSpacing, $penY, 'normal');
+                foreach ($sample->concentrations as $index => $concentration) {
+                    $this->MultiCell($this->convertPixelToMm($cellWidth), $heightMm, $concentration, 0, 'C', 0, 0, $this->convertPixelToMm($pollutantSpacing), $posYMm, true, 0, false, true, $heightMm, 'M');
+                    $pollutantSpacing += $cellWidth;
+                    $this->addLine($pollutantSpacing, 810, $pollutantSpacing, $penY, 'normal');
+                }
+            }
+
+            $previousPenY = $penY;
+            $previousPatternY = $endY;
+            
+        }
+
     }
+
 
     public function drawPattern($patternId, $sampleHeightPx, $posY){
         $posX = 225;
@@ -244,11 +346,11 @@ class PdfModel extends TCPDF
                         $height_rest = $sampleHeightPx;
                     }
                     $this->StartTransform();
-                    $this->Rect($this->convertPixelToMm($posX), $this->convertPixelToMm($posY), $this->convertPixelToMm($width_rest), $this->convertPixelToMm($height_rest), 'CNZ'); //Clipping mask
-                    $this->ImageSVG($image_txt, $this->convertPixelToMm($posX), $this->convertPixelToMm($posY), $this->convertPixelToMm($width_pattern), $this->convertPixelToMm($height_pattern), $link = '', $align = '', $palign = '', $border = 0, $fitonpage = false);
+                    $this->Rect($this->convertPixelToMm($posX), $this->convertPixelToMm($posY), $this->convertPixelToMm($width_rest), $this->convertPixelToMm($height_rest-1), 'CNZ'); //Clipping mask
+                    $this->ImageSVG($image_txt, $this->convertPixelToMm($posX), $this->convertPixelToMm($posY+2), $this->convertPixelToMm($width_pattern), $this->convertPixelToMm($height_pattern-2), $link = '', $align = '', $palign = '', $border = 0, $fitonpage = false);
                     $this->StopTransform();
                 } else {
-                    $this->ImageSVG($image_txt, $this->convertPixelToMm($posX), $this->convertPixelToMm($posY), $this->convertPixelToMm($width_pattern), $this->convertPixelToMm($height_pattern), $link = '', $align = '', $palign = '', $border = 0, $fitonpage = false);
+                    $this->ImageSVG($image_txt, $this->convertPixelToMm($posX), $this->convertPixelToMm($posY+2), $this->convertPixelToMm($width_pattern), $this->convertPixelToMm($height_pattern-2), $link = '', $align = '', $palign = '', $border = 0, $fitonpage = false);
                 }
                 $posY += $height_pattern;
             }
@@ -273,15 +375,15 @@ class PdfModel extends TCPDF
         $this->AddPage();
     }
 
-    public function addLine($x1, $y1, $x2, $y2, $style)
+    public function addLine($x1, $y1, $x2, $y2, $style, $color = array(0,0,0))
     {
         if ($style === 'dot') {
-            $style = array('width' => 0.4, 'cap' => 'butt', 'join' => 'mitter', 'dash' => '5,5', 'color' => array(0, 0, 0));
+            $style = array('width' => 0.4, 'cap' => 'butt', 'join' => 'mitter', 'dash' => '5,5', 'color' => $color);
             $this->Line($this->convertPixelToMm($x1), $this->convertPixelToMm($y1), $this->convertPixelToMm($x2), $this->convertPixelToMm($y2), $style);
             $style = array('width' => 0, 'cap' => 'butt', 'join' => 'mitter', 'dash' => 0, 'color' => array(0, 0, 0));
             $this->Line(0, 0, 0, 0, $style);
         } elseif ($style === 'normal') {
-            $style = array('width' => 0.2, 'cap' => 'butt', 'join' => 'mitter', 'dash' => 0, 'color' => array(0, 0, 0));
+            $style = array('width' => 0.2, 'cap' => 'butt', 'join' => 'mitter', 'dash' => 0, 'color' => $color);
             $this->Line($this->convertPixelToMm($x1), $this->convertPixelToMm($y1), $this->convertPixelToMm($x2), $this->convertPixelToMm($y2), $style);
             $style = array('width' => 0, 'cap' => 'butt', 'join' => 'mitter', 'dash' => 0, 'color' => array(0, 0, 0));
             $this->Line(0, 0, 0, 0, $style);
@@ -327,14 +429,18 @@ class PdfModel extends TCPDF
 
     }
 
+    public function straightLine($posY){
+        $this->addLine(180, $posY, 2457, $posY, 'normal');
+    }
+
+    public function brokenLine($posY, $offsetY){
+        $this->addLine(180, $posY, 362, $posY, 'normal');
+        $this->addLine(362, $posY, 375, $posY+$offsetY, 'normal');
+        $this->addLine(375, $posY+$offsetY, 2457, $posY+$offsetY, 'normal');
+    }
+
     private function convertPixelToMm($px)
     {
         return $px * 0.084666667;
     }
 }
-
-
-
-
-
-//0,0,255,0.2
