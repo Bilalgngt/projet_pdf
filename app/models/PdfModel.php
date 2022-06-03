@@ -42,7 +42,7 @@ class PdfModel extends TCPDF
         $this->SetKeywords('TCPDF, PDF, example, test, guide');
     }
 
-    public function drawHeader($company, $siteName, $header)
+    public function drawHeader($company, $siteName, $header, $pageNumber)
     {
         /*encadrement logo*/
         $this->MultiCell($this->convertPixelToMm(591), $this->convertPixelToMm(532), '', 1, '', 0, 0, $this->convertPixelToMm(24), $this->convertPixelToMm(24), true, 0, false, true, 0);
@@ -56,6 +56,7 @@ class PdfModel extends TCPDF
         //$this->Image($image_file, $this->convertPixelToMm(80), $this->convertPixelToMm(80), $this->convertPixelToMm(473), $this->convertPixelToMm(414), 'JPG', $company['link'], 'T', false, 300, '', false, false, 1, false, false, false);
         $this->printTitle($siteName, $header->date_campaign, $header->name);
         $this->printLogDetails($header);
+        $this->Bookmark($header->name, 0, $pageNumber, '', 'B', array(0,64,128));
     }
 
     public function printTitle($title, $date, $name)

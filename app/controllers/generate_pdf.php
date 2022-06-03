@@ -39,7 +39,7 @@
             foreach ($pages as $pageNumber => $page ) {
                     loadGeologyNames($sampleDetails[$pageNumber],$geologyNames,$Geology);
                     $pdfSheet->newPage($maxDepths[$pageNumber]);
-                    $pdfSheet->drawHeader($company, $siteName, $page);
+                    $pdfSheet->drawHeader($company, $siteName, $page, $pageNumber);
                     $pdfSheet->drawBody($sampleDetails[$pageNumber], $pollutantDetails, $waterZmin[$pageNumber]);
                     $pdfSheet->drawFooter();
             }

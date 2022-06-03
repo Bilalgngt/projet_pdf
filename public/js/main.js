@@ -133,7 +133,7 @@ function generateDataForPdf(site) {
         if (Object.keys(log.samples).length > 0) {
             let sampleDetails = [];
             let logsArray = Object.values(log.samples);
-            sortedlogs = logsArray.sort(compare);
+            let sortedlogs = logsArray.sort(compare);
             for (let sample of sortedlogs) {
                 let sampleDetail = {
                     geologyId: sample.id_geology_name,
