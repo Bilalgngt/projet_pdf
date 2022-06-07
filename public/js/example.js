@@ -1,7 +1,7 @@
 'use strict';
 
 function sendSite() {
-    loadJSON('public/sites_json/654.json').then((data) => {
+    loadJSON('public/sites_json/31.json').then((data) => {
         //console.log(generateHeader(data));
         let site = generateDataForPdf(data);
         postXHR('generate_pdf', {
@@ -18,3 +18,5 @@ function sendSite() {
         });
     });
 }
+
+//dessiner crepine

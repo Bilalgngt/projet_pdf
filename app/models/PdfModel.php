@@ -5,6 +5,8 @@ class PdfModel extends TCPDF
 {
 
     private $_maxDepth;
+    private $_ZMin;
+    private $_ZMaX;
 
     public function __construct()
     {
@@ -33,6 +35,17 @@ class PdfModel extends TCPDF
         return $this->_maxDepth;
     }
 
+    public function setStrainerZminZMax($ZMin,$ZMax)
+    {
+        $this->_ZMin = $ZMin;
+        $this->_ZMax = $ZMax;
+    }
+    public function getStrainerZminZMax()
+    {
+       return [$this->_ZMin, $this->_ZMax];
+    }
+
+
     public function setInformation()
     {
         $this->SetCreator(PDF_CREATOR);
@@ -53,10 +66,11 @@ class PdfModel extends TCPDF
         $this->MultiCell($this->convertPixelToMm(473), $this->convertPixelToMm(272), $header->name, 1, 'C', 0, 0, $this->convertPixelToMm(1984), $this->convertPixelToMm(24), true, 0, false, true, 25, 'M');
         /*logo */
         $image_file = RELATIVE_PATH['logos'] . $company['logo'];
-        //$this->Image($image_file, $this->convertPixelToMm(80), $this->convertPixelToMm(80), $this->convertPixelToMm(473), $this->convertPixelToMm(414), 'JPG', $company['link'], 'T', false, 300, '', false, false, 1, false, false, false);
+        $this->Image($image_file, $this->convertPixelToMm(80), $this->convertPixelToMm(80), $this->convertPixelToMm(473), $this->convertPixelToMm(414), 'JPG', $company['link'], 'T', false, 300, '', false, false, 1, false, false, false);
         $this->printTitle($siteName, $header->date_campaign, $header->name);
         $this->printLogDetails($header);
-        $this->Bookmark($header->name, 0, $pageNumber, '', 'B', array(0,64,128));
+        //$this->Bookmark($header->name, 0, $pageNumber, '', 'B', array(0,64,128));
+        $this->setStrainerZminZMax($header->strainer_zMin, $header->strainer_zMax);
     }
 
     public function printTitle($title, $date, $name)
@@ -126,7 +140,29 @@ class PdfModel extends TCPDF
         if (sizeof($pollutantDetails) > 0) {
             $this->writePollutantNames($pollutantDetails);
         }
+        $this->drawStrainer();
         $this->drawWaterZmin($waterZmin);
+        
+    }
+
+    public function drawStrainer(){
+        $ZMin = $this->getStrainerZminZMax()[0];
+        $ZMax = $this->getStrainerZminZMax()[1];
+        $scaler = $this->getMaxScale($this->getMaxDepth());
+        $startY = 810 + $ZMin * 15 * $scaler;
+        $endY = 810 + $ZMax * 15 * $scaler;
+        $posX = 264;
+        if($ZMin){
+            $strainerPosition = [$this->convertPixelToMm($posX+51),$this->convertPixelToMm(810), 
+                                $this->convertPixelToMm($posX), $this->convertPixelToMm(810),
+                                $this->convertPixelToMm($posX), $this->convertPixelToMm($endY+60), 
+                                $this->convertPixelToMm($posX+25.5), $this->convertPixelToMm($endY+100),
+                                $this->convertPixelToMm($posX+51), $this->convertPixelToMm($endY+60)];
+            $this->Polygon($strainerPosition, 'DF', '', [255,255,255]);
+            for($i = $startY; $i < $endY+60; $i+=75){
+                $this->addLine($posX+10, $i, $posX+40, $i, 'normal');
+            }
+        }
     }
 
     public function drawScale()
@@ -149,7 +185,7 @@ class PdfModel extends TCPDF
     public function drawWaterZmin($waterZmin)
     {
         $scaler = $this->getMaxScale($this->getMaxDepth());
-        $posX = array(263, 323,293);
+        $posX = array(265, 313,289);
         $posY = 810 + $waterZmin * 15 * $scaler;
         //var_dump($this->convertPixelToMm($posY-25));
         if(!(is_null($waterZmin))){

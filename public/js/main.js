@@ -116,6 +116,7 @@ function generateDataForPdf(site) {
     function fillConcentrationCell(sample, pollutantDetails) {
         let concentrations = new Array(pollutantDetails.length).fill(null);
         pollutantDetails.forEach((pollutantDetail, i) => {
+            let isConcentrationFilled = false;
             for (let pollutant of sample.pollutants) {
                 if (isSamePollutant(pollutantDetail, pollutant)) {
                     if (pollutant.under_detection === "1") {
@@ -123,7 +124,11 @@ function generateDataForPdf(site) {
                     } else {
                         concentrations[i] = pollutant.concentration;
                     }
+                    isConcentrationFilled = true;
                 }
+            }
+            if(!(isConcentrationFilled)){
+                concentrations[i] = "n.a.";
             }
         });
         return concentrations;
